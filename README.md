@@ -14,7 +14,7 @@ markdown.marp.enableHtml: true
 
 Lecture notes for 2nd year students at [ENSAI](https://ensai.fr/) (Rennes, France).
 
-* [Introduction](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/introduction)
-* [Python 101](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/python101)
-* [NumPy 101](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/numpy101)
-* [Linear regression](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/linear_regression)
+- [Introduction](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/introduction)
+- [Python 101](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/python101)
+- [NumPy 101](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/numpy101)
+- [Linear regression](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/linear_regression)
