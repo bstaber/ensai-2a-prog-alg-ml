@@ -9,6 +9,26 @@ header: ENSAI - 2A - Programmation algorithmique en Python - 2025/2026
 markdown.marp.enableHtml: true
 ---
 
+<style>
+
+img[alt~="center"] {
+  display: block;
+  margin: 0 auto;
+}
+blockquote {
+  background: #ffedcc;
+  border-left: 10px solid #d1bf9d;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+}
+blockquote:before{
+  content: unset;
+}
+blockquote:after{
+  content: unset;
+}
+</style>
+
 ### Python 101 🐍
 
 ```python
@@ -111,15 +131,15 @@ python --version
 
 ### The basics
 
-* Variables and types
-* Strings
-* Collections: list, tuple, dict, set
-* Control flow (if/else, match)
-* For/while loops
-* Functions and classes
-* Modules
-* Type hints and docstrings
-* Bonus: `uv`
+- Variables and types
+- Strings
+- Collections: list, tuple, dict, set
+- Control flow (if/else, match)
+- For/while loops
+- Functions and classes
+- Modules
+- Type hints and docstrings
+- Bonus: `uv`
 
 ---
 
