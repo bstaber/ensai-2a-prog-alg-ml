@@ -29,7 +29,7 @@ blockquote:after{
 }
 </style>
 
-### Python 101 🐍
+## Python 101 🐍
 
 ```python
 print("Hello, world!")
@@ -55,7 +55,7 @@ $ python hello_world.py
 
 ---
 
-## Python timeline
+### Python timeline
 
 - **1991**: First release by Guido van Rossum  
 - **2000**: Python 2.0 (list comprehensions, ...)  
@@ -179,7 +179,7 @@ text.lower()
 
 ---
 
-## Collections: lists
+### Collections: lists
 
 Lists are the most basic collections / containers.
 
@@ -196,7 +196,7 @@ squares = [x**2 for x in range(5)]
 
 ---
 
-## Collections: lists
+### Collections: lists
 
 **Features**:
 - **Mutable**: you can add, remove, or change elements.
@@ -206,7 +206,7 @@ squares = [x**2 for x in range(5)]
 
 ---
 
-## Collections: tuples
+### Collections: tuples
 
 A tuple looks quite similar.
 ```python
@@ -221,7 +221,7 @@ x, y = point
 
 ---
 
-## Collections: dicts
+### Collections: dicts
 
 A dictionnary is a collection keys and values:
 ```python
@@ -237,7 +237,7 @@ person.update({"age": 31})
 
 ---
 
-## Collections: sets
+### Collections: sets
 
 Unorder collection:
 ```python
@@ -253,7 +253,7 @@ unique.union({5, 6})
 
 ---
 
-## Collections: sets
+### Collections: sets
 
 **Features**:
 - Unordered: no guaranteed order when iterating.
@@ -275,7 +275,7 @@ unique.union({5, 6})
 
 ---
 
-## Control flow: conditionals
+### Control flow: conditionals
 
 Classic if/else statements like in any other language:
 ```python
@@ -289,7 +289,7 @@ else:
 
 ---
 
-## Control flow: loops
+### Control flow: loops
 
 Classical loop over a list:
 ```python
@@ -304,7 +304,7 @@ for i, fruit in enumerate(fruits):
 ```
 
 ---
-## Control flow: loops
+### Control flow: loops
 
 Loop over multiple iterables:
 ```python
@@ -324,7 +324,7 @@ while i < 3:
 
 ---
 
-## Functions
+### Functions
 
 Simple function with a single input with default value:
 ```python
@@ -340,7 +340,7 @@ def foofoo(x, y, z=1.0):
 
 ---
 
-## Classes
+### Classes
 
 Simple class:
 ```python
@@ -359,7 +359,7 @@ p.say_hello()
 ```
 ---
 
-## Importing modules
+### Importing modules
 
 Python has several standard modules. The `math` module:
 ```python
