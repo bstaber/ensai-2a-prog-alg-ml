@@ -30,21 +30,21 @@ jobs:
       - name: Marp Build (README)
         uses: docker://marpteam/marp-cli:latest
         with:
-          args: README.md -o build/index.html
+          args: README.md --config marp.config.js -o build/index.html
         env:
           MARP_USER: root:root
 
       - name: Marp Build (README.pdf)
         uses: docker://marpteam/marp-cli:latest
         with:
-          args: README.md --allow-local-files -o build/README.pdf
+          args: README.md --allow-local-files --config marp.config.js -o build/README.pdf
         env:
           MARP_USER: root:root
 
       - name: Marp Build (README.pptx)
         uses: docker://marpteam/marp-cli:latest
         with:
-          args: README.md --allow-local-files -o build/README.pptx
+          args: README.md --allow-local-files --config marp.config.js -o build/README.pptx
         env:
           MARP_USER: root:root
 
@@ -56,7 +56,7 @@ jobs:
         if: steps.docs-folder-exists.outputs.has_docs == '0'
         uses: docker://marpteam/marp-cli:latest
         with:
-          args: -I docs/ -o build/docs/
+          args: -I docs/ --config marp.config.js -o build/docs/
         env:
           MARP_USER: root:root
 
