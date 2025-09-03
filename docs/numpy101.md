@@ -1,5 +1,5 @@
 ---
-theme: gaia
+theme: rose-pine
 _class: lead
 marp: true
 paginate: true
