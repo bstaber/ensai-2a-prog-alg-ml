@@ -44,7 +44,7 @@ $$
 b = \overline{y} - a \overline{x}
 $$
 
-where $\overline{x}$ and $\overline{y}$ are the means of $x$ and $y$.
+where $\overline{x}$ and $\overline{y}$ are the means of $X = (x_1, ..., x_n)$ and $Y = (y_1, ..., y_n)$.
 
 ---
 
