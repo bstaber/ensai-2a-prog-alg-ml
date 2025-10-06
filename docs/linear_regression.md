@@ -164,6 +164,29 @@ $$
 
 ---
 
+### A bit harder? Ridge regression 🔥🔥
+
+We now **penalize large weights** to avoid overfitting:
+
+$$
+\mathcal{L}(w) = \frac{1}{n} \sum_i (y_i - w^\top x_i - b)^2 + \lambda \|w\|_2^2
+$$
+
+- Same idea: minimize the MSE  
+- But now with a regularization term controlled by $\lambda$
+- Find the analytical solution for $w$ and implement it
+
+<p data-marpit-fragment>💡 Closed-form solution:</p>
+
+<p data-marpit-fragment>
+$$
+\hat{w} = (X^\top X + \lambda I)^{-1} X^\top y
+$$
+</p>
+
+---
+
+
 ## Summary
 
 - Generated noisy toy data with a linear relationship  
