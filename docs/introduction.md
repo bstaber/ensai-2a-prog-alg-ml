@@ -13,7 +13,7 @@ markdown.marp.enableHtml: true
 
 1. Introduction: objectives, schedule & exam
 2. Basics about Python & NumPy
-3. Warm-up with linear regression
+3. Warm-up exercices: linear regression, k-Means, ...
 
 ----
 
