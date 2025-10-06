@@ -260,7 +260,8 @@ NumPy is the foundation of many scientific stacks in Python.
 - [NumPy homepage](https://numpy.org)  
 - [User Guide](https://numpy.org/doc/stable/user/)  
 - [Quickstart Tutorial](https://numpy.org/doc/stable/user/quickstart.html)  
-- [Reference](https://numpy.org/doc/stable/reference/)  
+- [Reference](https://numpy.org/doc/stable/reference/)
+- [NumPy 100 exercises](https://github.com/rougier/numpy-100)
 
 💡 Use the quickstart and examples to learn.  
 
