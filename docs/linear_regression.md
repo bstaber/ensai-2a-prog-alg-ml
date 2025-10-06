@@ -147,20 +147,41 @@ plt.legend()
 
 ---
 
-### Too easy? Multidimensional linear regression 🔥
+### Too easy? Multidimensional linear regression (1/2) 🔥
 
 We now have vectors $x_i \in \mathbb{R}^d$:
+
+$$
+y_i \approx w^\top x_i
+$$
+
+Objective:
+$$
+\min_w \ \|y - Xw\|_2^2
+$$
+
+Find the analytical solution for $w$ and implement it in Python.
+
+Closed-form solution:
+
+* $$\hat{w} = (X^\top X)^{-1} X^\top y$$
+
+---
+
+### Too easy? Multidimensional linear regression (2/2) 🔥
+
+Add an intercept:
 
 $$
 y_i \approx w^\top x_i + b
 $$
 
-- Still linear, but in higher dimensions  
-- Same principle: minimize MSE  
-- Solution uses **matrix algebra**.
-- Find the analytical solution for $w$ and implement it in Python.
+Find the analytical solution for $w$ and $b$, and implement it in Python.
 
-* $$\hat{w} = (X^\top X)^{-1} X^\top y$$
+Closed-form solution:
+
+* Let $\tilde{X} = \begin{bmatrix} X & \mathbf{1} \end{bmatrix}$, $\tilde{w} = \begin{bmatrix} w \\ b \end{bmatrix}$.
+* $$\hat{\tilde{w}} = (\tilde{X}^\top \tilde{X})^{-1} \tilde{X}^\top y$$
 
 ---
 
@@ -176,16 +197,11 @@ $$
 - But now with a regularization term controlled by $\lambda$
 - Find the analytical solution for $w$ and implement it
 
-<p data-marpit-fragment>💡 Closed-form solution:</p>
+Closed-form solution:
 
-<p data-marpit-fragment>
-$$
-\hat{w} = (X^\top X + \lambda I)^{-1} X^\top y
-$$
-</p>
+* $$\hat{w} = (X^\top X + \lambda I)^{-1} X^\top y$$
 
 ---
-
 
 ## Summary
 
