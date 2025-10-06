@@ -46,7 +46,7 @@ And develop good development practices in Python for ML.
 
 - 3 hours in class
 - Access to online documentation
-- LLMs are forbidden, we're not here to learn vibe coding
+- LLMs are forbidden
 - One exercise closely related to what we've done in class
 
 **Example**
