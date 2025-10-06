@@ -157,13 +157,10 @@ $$
 
 - Still linear, but in higher dimensions  
 - Same principle: minimize MSE  
-- Solution uses **matrix algebra**:
+- Solution uses **matrix algebra**.
+- Find the analytical solution for $w$ and implement it in Python.
 
-$$
-\hat{w} = (X^\top X)^{-1} X^\top y
-$$
-
-Implement this in pure Python and/or NumPy!
+* $$\hat{w} = (X^\top X)^{-1} X^\top y$$
 
 ---
 
