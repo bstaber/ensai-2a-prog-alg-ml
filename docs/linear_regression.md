@@ -212,12 +212,12 @@ Pure Python vs NumPy implementation
 
 Iterate until convergence:
 
-1) Initialize centers $(C \in \mathbb{R}^{k \times d}$ (random rows of $X$)
-2) Assign:
+- Initialize centers $(C \in \mathbb{R}^{k \times d}$ (random rows of $X$)
+-  Assign:
 $$
 a_i = \arg\min_j \|x_i - c_j\|^2
 $$
-3) Update:
+- Update:
 $$
 c_j = \text{mean of } \{x_i : a_i = j\}
 $$
