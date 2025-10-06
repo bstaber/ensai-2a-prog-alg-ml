@@ -203,6 +203,29 @@ Closed-form solution:
 
 ---
 
+### k-Means clustering from scratch 🔥🔥🔥
+
+Iterate until convergence:
+
+1) Initialize centers $(C \in \mathbb{R}^{k \times d}$ (random rows of $X$)
+2) Assign:
+$$
+a_i = \arg\min_j \|x_i - c_j\|^2
+$$
+3) Update:
+$$
+c_j = \text{mean of } \{x_i : a_i = j\}
+$$
+
+Stop when assignments don't change or $\|C^{(t)} - C^{(t-1)}\|$ is small
+
+NumPy hints:
+- squared distances via broadcasting
+- `np.argmin(..., axis=1)` for assignments
+- means with `X[labels==j].mean(axis=0)`
+
+---
+
 ## Summary
 
 - Generated noisy toy data with a linear relationship  
