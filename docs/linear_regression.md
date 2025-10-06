@@ -203,6 +203,11 @@ Closed-form solution:
 
 ---
 
+# k-Means clustering
+Pure Python vs NumPy implementation
+
+---
+
 ### k-Means clustering from scratch 🔥🔥🔥
 
 Iterate until convergence:
@@ -219,18 +224,4 @@ $$
 
 Stop when assignments don't change or $\|C^{(t)} - C^{(t-1)}\|$ is small
 
-NumPy hints:
-- squared distances via broadcasting
-- `np.argmin(..., axis=1)` for assignments
-- means with `X[labels==j].mean(axis=0)`
-
 ---
-
-## Summary
-
-- Generated noisy toy data with a linear relationship  
-- Implemented linear regression in two ways:
-  - Pure Python (lists + loops)
-  - NumPy (vectorized, analytical)  
-- Derived slope & intercept from covariance and variance  
-- Visualized fitted vs true line  
