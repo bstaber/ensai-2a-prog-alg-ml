@@ -140,7 +140,7 @@ Very powerful: no loops needed.
 import numpy as np
 a = np.array([1.0, 2.0, 3.0])
 b = 2.0
-a * b
+a + b
 ```
 
 [Illustration](broadcast1.png)
