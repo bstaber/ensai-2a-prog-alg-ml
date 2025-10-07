@@ -204,6 +204,11 @@ diff = X[:, None, :] - X[None, :, :]
 D = np.sum(diff**2, axis=-1)
 ```
 
+- `X[:, None, :]` has shape `(2, 1, 3)`
+- `X[None, :, :]` has shape `(1, 2, 3)`
+- Broadcasting makes them compatible: result is `(2, 2, 3)`.
+- Each `[i, j, :]` slice contains $x_i - x_j$.
+
 ---
 
 ### Reshaping arrays
