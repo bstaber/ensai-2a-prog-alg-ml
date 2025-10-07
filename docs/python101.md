@@ -64,6 +64,10 @@ Python keeps evolving, with strong focus on speed and clarity
 
 **Plain Python**
 ```python
+<style>
+pre code { font-size: 0.8em; }
+</style>
+
 x = [1, 2, 3]
 y = [4, 5, 6]
 
@@ -72,6 +76,10 @@ dot = sum(x_i * y_i for x_i, y_i in zip(x, y))
 
 **Plain C++**
 ```c++
+<style>
+pre code { font-size: 0.8em; }
+</style>
+
 #include <iostream>
 #include <vector>
 
