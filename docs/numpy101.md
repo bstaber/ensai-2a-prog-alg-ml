@@ -143,7 +143,7 @@ b = 2.0
 a + b
 ```
 
-![Illustration](broadcast1.png)
+![Illustration](../img/broadcast1.png)
 
 ---
 
@@ -160,7 +160,7 @@ b = np.array([1.0, 2.0, 3.0])
 a + b
 ```
 
-![Illustration](broadcast2.png)
+![Illustration](../img/broadcast2.png)
 
 ---
 
