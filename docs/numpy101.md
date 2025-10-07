@@ -178,6 +178,34 @@ a[:, np.newaxis] + b
 
 ---
 
+### Broadcasting: distance matrix 🔥
+
+Let $X$ be a matrix of shape $(2, 3)$ that represents two vectors of length $3$.
+
+```python
+X = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+```
+
+Compute the distance matrix defined as:
+
+$$D_{ij} = \|x_i - x_j\|_2^2$$
+
+where $x_i$ is the i-th line of $X$.
+
+* Try with a for loop
+* Then with broadcasting
+
+---
+
+### Solution
+
+```python
+diff = X[:, None, :] - X[None, :, :]
+D = np.sum(diff**2, axis=-1)
+```
+
+---
+
 ### Reshaping arrays
 
 ```python
