@@ -89,9 +89,10 @@ pre code { font-size: <span class="hljs-number">0.8</span>em; }
     std::vector&lt;<span class="hljs-type">int</span>&gt; x = {<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>};
     std::vector&lt;<span class="hljs-type">int</span>&gt; y = {<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>};
     <span class="hljs-type">int</span> dot = <span class="hljs-number">0</span>;
-    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i = <span class="hljs-number">0</span>; i &lt; x.<span class="hljs-built_in">size</span>(); ++i)
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">size_t</span> i = <span class="hljs-number">0</span>; i &lt; x.<span class="hljs-built_in">size</span>(); ++i) {
         dot += x[i] * y[i];
-    std::cout &lt;&lt; dot &lt;&lt; std::endl;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 }
 </code></pre>
 <p>And you need to compile:</p>
