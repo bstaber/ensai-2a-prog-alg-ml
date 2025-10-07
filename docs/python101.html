@@ -68,13 +68,21 @@
 <header>ENSAI - 2A - Programmation algorithmique en Python - 2025/2026</header>
 <h3 id="python-vs-c----dot-product-of-two-vectors">Python  vs C++ -- Dot product of two vectors.</h3>
 <p><strong>Plain Python</strong></p>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python">x = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-python">&lt;style&gt;
+pre code { font-size: <span class="hljs-number">0.8</span>em; }
+&lt;/style&gt;
+
+x = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]
 y = [<span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>]
 
 dot = <span class="hljs-built_in">sum</span>(x_i * y_i <span class="hljs-keyword">for</span> x_i, y_i <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(x, y))
 </code></pre>
 <p><strong>Plain C++</strong></p>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-c++">&lt;style&gt;
+pre code { font-size: <span class="hljs-number">0.8</span>em; }
+&lt;/style&gt;
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span>
 
 <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
