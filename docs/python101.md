@@ -74,6 +74,15 @@ y = [4, 5, 6]
 dot = sum(x_i * y_i for x_i, y_i in zip(x, y))
 ```
 
+Then simple run:
+
+```bash
+python my_script.py
+```
+---
+
+### Python  vs C++ -- Dot product of two vectors.
+
 **Plain C++**
 ```c++
 <style>
@@ -98,7 +107,6 @@ And you need to compile:
 ```bash
 g++ dot.cpp -o dot && ./dot
 ```
-
 ---
 
 ### Python: interpreted language
