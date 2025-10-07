@@ -1,4 +1,4 @@
----
+<img width="567" height="243" alt="image" src="https://github.com/user-attachments/assets/7a571612-7954-4c7d-9bc4-c79f2ce044ca" />---
 theme: rose-pine
 _class: lead
 marp: true
@@ -161,6 +161,20 @@ a + b
 ```
 
 ![Illustration](../img/broadcast2.png)
+
+---
+
+### Broadcasting
+
+**Outer product/sum**
+```python
+import numpy as np
+a = np.array([0.0, 10.0, 20.0, 30.0])
+b = np.array([1.0, 2.0, 3.0])
+a[:, np.newaxis] + b
+```
+
+![Illustration](../img/broadcast3.png)
 
 ---
 
