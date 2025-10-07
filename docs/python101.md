@@ -289,7 +289,7 @@ unique.union({5, 6})
 | Type   | Properties | Best Use |
 |--------|------------|----------|
 | **List** | Ordered, mutable, indexable | Sequences of items |
-| **Tuple** | Ordered, immutable | Fixed-size records |
+| **Tuple** | Ordered, immutable, indexable | Fixed-size records |
 | **Dict** | Key → Value mapping, fast O(1) lookup | Structured data (JSON-like) |
 | **Set** | Unordered, unique, O(1) membership | Membership tests, set operations |
 
