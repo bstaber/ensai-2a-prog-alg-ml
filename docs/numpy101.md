@@ -192,8 +192,8 @@ $$D_{ij} = \|x_i - x_j\|_2^2$$
 
 where $x_i$ is the i-th line of $X$.
 
-* Try with a for loop
-* Then with broadcasting
+- Try with a for loop
+- Then with broadcasting
 
 ---
 
