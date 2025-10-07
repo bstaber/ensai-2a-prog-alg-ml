@@ -85,10 +85,6 @@ python my_script.py
 
 **Plain C++**
 ```c++
-<style>
-pre code { font-size: 0.8em; }
-</style>
-
 #include <iostream>
 #include <vector>
 
