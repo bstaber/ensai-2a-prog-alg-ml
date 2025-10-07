@@ -143,6 +143,8 @@ b = 2.0
 a * b
 ```
 
+[Illustration](broadcast1.png)
+
 ---
 
 ### Broadcasting
@@ -157,6 +159,8 @@ a = np.array([[ 0.0,  0.0,  0.0],
 b = np.array([1.0, 2.0, 3.0])
 a + b
 ```
+
+[Illustration](broadcast2.png)
 
 ---
 
