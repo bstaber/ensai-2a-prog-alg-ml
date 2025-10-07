@@ -87,9 +87,10 @@ int main() {
     std::vector<int> x = {1, 2, 3};
     std::vector<int> y = {4, 5, 6};
     int dot = 0;
-    for (size_t i = 0; i < x.size(); ++i)
+    for (size_t i = 0; i < x.size(); ++i) {
         dot += x[i] * y[i];
-    std::cout << dot << std::endl;
+    }
+    return 0;
 }
 ```
 
