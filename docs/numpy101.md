@@ -1,4 +1,4 @@
-<img width="567" height="243" alt="image" src="https://github.com/user-attachments/assets/7a571612-7954-4c7d-9bc4-c79f2ce044ca" />---
+---
 theme: rose-pine
 _class: lead
 marp: true
