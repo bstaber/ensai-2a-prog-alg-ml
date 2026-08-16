@@ -4,366 +4,287 @@ _class: lead
 marp: true
 paginate: true
 size: 16:9
-header: ENSAI - 2A - Programmation algorithmique en Python - 2025/2026
-# footer: 2025 - 2026
+header: ENSAI · Python essentials
 markdown.marp.enableHtml: true
 ---
 
-## Python 101 🐍
+# Python essentials 🐍
+
+The syntax needed for today's fit–predict–evaluate workflow.
+
+**25 minutes teaching · 15 minutes guided practice** · appendices are reference only
+
+---
+
+## How Python runs
+
+The 10-second version:
+
+- You run a Python file directly. There is no separate compile step before you see results.
+- Statements run in order, top to bottom.
+- A function's body runs only when you call it.
+- When something fails, read the **last** line of the error first.
+
+Heads-up: libraries like NumPy move the heavy numerical work into fast compiled code. You will see the payoff soon; the details are in Appendix B.
+
+---
+
+## Run a script
+
+`hello.py`:
 
 ```python
-print("Hello, world!")
+message = "Hello, world!"
+print(message)
 ```
 
-Run with:
+From the repository environment:
 
 ```bash
-$ python hello_world.py
+uv run python hello.py
 ```
 
----
+Output:
 
-### What is Python? 🐍
+```text
+Hello, world!
+```
 
-- **Created in 1991** by *Guido van Rossum*  
-- Open source, community-driven: [python.org](https://www.python.org)  
-- **General-purpose**: web, data science, ML, automation, scripting...  
-- **Easy to learn**, readable syntax
-- Main implementation: **CPython** (default, in C)  
-- Other implementations: PyPy (JIT), Jython (Java), MicroPython, RustPython, ...
-- **Popularity**: great community and big ecosystems
+`uv` handles the Python environment for you. See the optional *Python tooling & environments* deck for `uv init`, `uv sync`, and how environments work.
 
 ---
 
-### Python timeline
+## Names, values, and types
 
-- **1991**: First release by Guido van Rossum  
-- **2000**: Python 2.0 (list comprehensions, ...)  
-- **2008**: Python 3.0 (major redesign)  
-- **2020**: Python 2 officially retired  
-- **2023–2025**: Python 3.11–3.13 (faster, typing, match/case, async)
+The four classic types:
 
-Python keeps evolving, with strong focus on speed and clarity
-
----
-
-### Python: interpreted language
-
-- **Compiled languages** (C, C++, Rust…)
-  - Code is **translated to machine code** before running
-  - Fast execution, but need to recompile after changes
-
-- **Interpreted languages** (Python, JavaScript, R, ...)
-  - Code is **executed line by line** by an interpreter (CPython)
-  - Easier to test and debug, no compilation step
-  - Usually slower than compiled code
-
----
-
-### Python  vs C++ -- Dot product of two vectors.
-
-**Plain Python**
 ```python
-x = [1, 2, 3]
-y = [4, 5, 6]
+x = 42           # int
+pi = 3.14        # float
+name = "Alice"   # str
+is_valid = True  # bool
 
-dot = sum(x_i * y_i for x_i, y_i in zip(x, y))
-```
-
-Then simple run:
-
-```bash
-python my_script.py
-```
----
-
-### Python  vs C++ -- Dot product of two vectors.
-
-**Plain C++**
-```c++
-#include <iostream>
-#include <vector>
-
-int main() {
-    std::vector<int> x = {1, 2, 3};
-    std::vector<int> y = {4, 5, 6};
-    int dot = 0;
-    for (size_t i = 0; i < x.size(); ++i) {
-        dot += x[i] * y[i];
-    }
-    return 0;
-}
-```
-
-And you need to compile:
-```bash
-g++ dot.cpp -o dot && ./dot
-```
----
-
-### Python: interpreted language
-
-Python = interpreted (CPython), but…
-- Many libraries (NumPy, PyTorch) use **compiled C/C++/Fortran** under the hood
-- You get the **ease of Python** + **speed of compiled code**
-- You can even make python bindings for your own C/C++ codes (`pybind11`, `nanobind`, ...)
-
----
-
-### Setting up Python
-
-**Ways to develop and run python code**
-- Scripts: `python file.py`
-- IDEs: **VSCode**, PyCharm
-- Notebooks: Jupyter (`notebook.ipynb`), marimo (`notebook.py`)
-
-**Nowadays, the classical combo is**:
-* VSCode with Python extensions
-* Jupyter or marimo for notebooks and fast prototyping
-
----
-
-### Setting up Python
-
-**Managing environments**
-- pyenv (switch Python versions)
-- `venv` (built-in, simple)
-- pip (install packages)
-- advanced tools: poetry, uv
-- scientific computing: conda, mamba, pixi
-
----
-
-### Setting up Python
-
-You don't know which python you have right now?
-
-In a command line:
-```bash
-which python
-```
-
-And:
-```bash
-python --version
-```
-
----
-
-### The basics
-
-- Variables and types
-- Strings
-- Collections: list, tuple, dict, set
-- Control flow (if/else, match)
-- For/while loops
-- Functions and classes
-- Modules
-- Type hints and docstrings
-- Bonus: `uv`
-
----
-
-### Variables & basic types
-
-We have the four classic types:
-```python
-x = 42        # int
-pi = 3.14     # float
-name = "Alice"  # str
-is_valid = True # bool
-```
-
-In your code, you can check the type of any object:
-```python
 print(type(x), type(pi))
 ```
 
+- A name refers to a value.
+- Values have runtime types; incompatible operations can fail at runtime.
+- Type hints (`x: int = 42`) document intent for editors; Python does not enforce them.
+
 ---
 
-### Strings
+## Strings
 
-You can combine strings together in many ways.
+Combine strings in several ways:
+
 ```python
 greeting = "Hello"
 name = "Alice"
-msg = f"{greeting}, {name}!"
+msg = f"{greeting}, {name}!"   # f-string: embed values
+
+print(msg)  # Hello, Alice!
 ```
 
-There are many existing methods for strings:
+Many methods exist:
+
 ```python
 text = "  Python Basics  "
-text.strip()
-text.lower()
-"-".join(["A", "B"])
+text.strip()          # "Python Basics"
+text.lower()          # "  python basics  " (whitespace preserved)
+"-".join(["A", "B"])  # "A-B"
 ```
 
 ---
 
-### Collections: lists
-
-Lists are the most basic collections / containers.
+## Lists: ordered values
 
 ```python
-fruits = ["apple", "banana", "cherry"]
-fruits.append("kiwi")
-print(fruits[0])
+values = [2.0, 4.0, 8.0, 16.0]
+
+values[0]       # 2.0
+values[-1]      # 16.0
+values[1:3]     # [4.0, 8.0]
+len(values)     # 4
 ```
 
-You can also build a list *in comprehension*.
+Indexes start at zero. A slice includes its start and excludes its stop.
+
+```text
+ index       0    1    2     3
+ value     2.0  4.0  8.0  16.0
+```
+
+---
+
+## Lists are mutable
+
 ```python
-squares = [x**2 for x in range(5)]
+values = [2.0, 4.0]
+values.append(8.0)
+values[0] = 1.0
+
+print(values)  # [1.0, 4.0, 8.0]
 ```
 
+Assignment does not copy a list:
+
+```python
+alias = values
+alias.append(16.0)
+print(values)  # [1.0, 4.0, 8.0, 16.0]
+```
+
+Use `values.copy()` for an independent shallow copy.
+
 ---
 
-### Collections: lists
+## Tuples: immutable, ordered
 
-**Features**:
-- **Mutable**: you can add, remove, or change elements.
-- **Ordered**: elements keep their order of insertion.
-- **Indexable & sliceable**: access by index (fruits[0]) or slices (fruits[1:3]).
-- Can hold mixed types ([1, "two", 3.0]).
-
----
-
-### Collections: tuples
-
-A tuple looks quite similar.
 ```python
 point = (2, 3)
-x, y = point
+x, y = point     # unpacking
+
+print(x)  # 2
 ```
 
-**Features**:
 - **Immutable**: once created, cannot be changed.
 - **Ordered**: like lists, preserve insertion order.
-- Support unpacking (x, y = point).
+- Support unpacking: `x, y = point`.
+
+Use a tuple when the size and meaning are fixed, like a point `(x, y)`.
 
 ---
 
-### Collections: dicts
+## Dictionaries map keys to values
 
-A dictionnary is a collection keys and values:
 ```python
 person = {"name": "Alice", "age": 30}
-print(person["name"])
+
+print(person["name"])  # Alice
 ```
 
-You can also safely access the dictionnary or update it:
+Safely read and update:
+
 ```python
-person.get("age", "unknown")
+person.get("age", "unknown")   # 30
 person.update({"age": 31})
+
+print(person["age"])  # 31
 ```
 
+Use a dict when you need lookup by a label rather than by integer index.
+
 ---
 
-### Collections: sets
+## Sets hold unique values
 
-Unorder collection:
 ```python
-x = set([1, 2, 2, 3])
-print(x)  # {1, 2, 3}
+tags = set([1, 2, 2, 3])
+print(tags)  # {1, 2, 3}
 ```
 
-You can add items and perform *set operations*:
 ```python
-unique.add(4)
-unique.union({5, 6})
+tags.add(4)
+tags.union({5, 6})
 ```
 
----
-
-### Collections: sets
-
-**Features**:
-- Unordered: no guaranteed order when iterating.
-- Unique elements only (duplicates removed automatically).
-- Support set operations (union, intersection, difference).
-- Mutable (you can add/remove), but there’s also an immutable version called frozenset.
+Unordered iteration; duplicates are automatically removed; supports union, intersection, and difference; mutable.
 
 ---
 
-### Collections: recap
+## Conditions
 
-| Type   | Properties | Best Use |
-|--------|------------|----------|
-| **List** | Ordered, mutable, indexable | Sequences of items |
-| **Tuple** | Ordered, immutable, indexable | Fixed-size records |
-| **Dict** | Key → Value mapping, fast O(1) lookup | Structured data (JSON-like) |
-| **Set** | Unordered, unique, O(1) membership | Membership tests, set operations |
-
-
----
-
-### Control flow: conditionals
-
-Classic if/else statements like in any other language:
 ```python
-if age > 18:
-    print("Adult")
-elif age == 18:
-    print("Just turned adult")
+mse = 2.3
+baseline_mse = 51.5
+
+if mse < baseline_mse:
+    print("the model beats the baseline")
 else:
-    print("Minor")
+    print("check the implementation")
 ```
+
+Blocks are defined by indentation. Comparisons produce Booleans.
+
+Useful operators: `==`, `!=`, `<`, `<=`, `>`, `>=`, `and`, `or`, `not`.
 
 ---
 
-### Control flow: loops
+## Loops and `range`
 
-Classical loop over a list:
 ```python
-for fruit in fruits:
-    print(fruit)
+squared = []
+for value in range(5):
+    squared.append(value**2)
+
+print(squared)  # [0, 1, 4, 9, 16]
 ```
 
-Get the index and the value at the same time:
-```python
-for i, fruit in enumerate(fruits):
-    print(i, fruit)
-```
+`range(5)` produces integers from `0` up to but not including `5`.
 
----
-### Control flow: loops
-
-Loop over multiple iterables:
-```python
-for fruit, vegetable in zip(fruits, vegetables):
-    print(fruit, vegetable)
-
-for i, (fruit, vegetable) in enumerate(zip(fruits, vegetables)):
-    print(fruit, vegetable)
-
-```
-
-Classic while loop:
-```python
-while i < 3:
-    i += 1
-```
+Use a loop when each iteration performs a meaningful step. Later, NumPy will replace many numerical loops with array operations.
 
 ---
 
-### Functions
+## Comprehensions express simple transforms
 
-Simple function with a single input with default value:
+Loop form:
+
 ```python
-def greet(name="world"):
-    return f"Hello, {name}!"
+predictions = []
+for value in x_values:
+    predictions.append(intercept + slope * value)
 ```
 
-Function with multiple inputs:
+Comprehension:
+
 ```python
-def foofoo(x, y, z=1.0):
-    return z*(x + y)
+predictions = [
+    intercept + slope * value
+    for value in x_values
+]
 ```
+
+Use the comprehension for a simple transform; keep the loop when the body has several steps.
 
 ---
 
-### Classes
+## Iterate over paired data with `zip`
 
-Simple class:
+```python
+observed = [3.0, 5.0, 8.0]
+predicted = [2.5, 5.5, 7.0]
+
+errors = []
+for target, prediction in zip(observed, predicted):
+    errors.append(target - prediction)
+
+print(errors)  # [0.5, -0.5, 1.0]
+```
+
+`zip` stops at the shortest input. Validate equal lengths when silently dropping data would be an error.
+
+---
+
+## Functions package a contract
+
+```python
+def mean(values: list[float]) -> float:
+    """Return the arithmetic mean of a non-empty list."""
+    if not values:
+        raise ValueError("mean requires at least one value")
+    return sum(values) / len(values)
+
+result = mean([2.0, 4.0, 6.0])
+print(result)  # 4.0
+```
+
+A useful numerical function states its inputs, output, and invalid cases.
+
+---
+
+## Classes group data with behavior
+
 ```python
 class Person:
     def __init__(self, name):
@@ -371,140 +292,234 @@ class Person:
 
     def say_hello(self):
         print(f"Hey, I'm {self.name}")
+
+p = Person("Alice")
+p.say_hello()  # Hey, I'm Alice
 ```
 
-Usage:
-```python
-p = Person("Emmanuel")
-p.say_hello()
-```
+We will not need to write classes today, but you will meet them in libraries and later sessions.
+
 ---
 
-### Importing modules
+## Imports make dependencies explicit
 
-Python has several standard modules. The `math` module:
 ```python
 import math
-print(math.sqrt(16))
-print(math.pi)
+
+distance = math.sqrt(3.0**2 + 4.0**2)
+print(distance)  # 5.0
 ```
 
-The `os` module:
-```python
-import os
-print(os.getcwd())
-print(os.listdir())
-```
+Later today:
 
----
-
-### Importing modules
-
-Shorter alias:
 ```python
 import numpy as np
+import matplotlib.pyplot as plt
 ```
 
-Import specific objects from a module:
+Keep imports near the start of a script or notebook. Avoid wildcard imports: they hide where names come from.
+
+---
+
+## Read the final line of an error first
+
+```text
+Traceback (most recent call last):
+  File "metrics.py", line 8, in <module>
+    score = mse_py(targets, predictions)
+  File "metrics.py", line 3, in mse_py
+    raise ValueError("inputs must have the same non-zero length")
+ValueError: inputs must have the same non-zero length
+```
+
+1. Read the exception type and message.
+2. Find the first frame that belongs to your code.
+3. Inspect the values at that line.
+4. Fix the cause, not the symptom.
+
+---
+
+## Bridge to the shared dataset
+
+The notebook generates one reproducible NumPy dataset, then exposes the same observations as lists:
+
 ```python
-from math import sqrt
-x = 4.0
-y = sqrt(x)
+rng = np.random.default_rng(42)
+x = rng.uniform(0.0, 10.0, size=50)
+y = 1.0 + 2.5 * x + rng.normal(0.0, 2.0, size=x.shape)
+
+x_list = x.tolist()
+y_list = y.tolist()
 ```
+
+The Python and NumPy implementations therefore solve exactly the same problem.
 
 ---
 
-### A few good practices: type hints and docstrings
+<!-- _class: exercise -->
 
-Totally optional but really useful in practice.
+## Exercise · pure-Python MSE
+
+**Time:** 7 minutes coding · 15 minutes including launch and debrief · **Work:** pairs
+
+Implement:
+
 ```python
-def mean(x: list[float]) -> float:
-    """Compute the mean value of the list.
-
-    Args:
-        x: list of floats
-    
-    Returns:
-        The empirical mean of x
-    """
-    return sum(x)/len(x)
+def mse_py(y_true: list[float], y_pred: list[float]) -> float:
+    """Return the mean squared error of equal-length non-empty lists."""
+    ...
 ```
 
----
+Checks:
 
-### Bonus: setup a project with `uv`
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/). Create a new project:
-```bash
-uv init --lib my_project
-```
-
-This automatically creates a project with a standard layout:
-```bash
-my_project/
-├── README.md
-├── pyproject.toml
-└── src
-    └── my_project
-        ├── __init__.py
-        └── py.typed
-```
----
-
-### Bonus: setup a project with `uv`
-
-Pick a python version:
-```bash
-uv python install 3.12
-```
-
-Add libraries:
-```bash
-uv add numpy
-```
-
-This automatically updates `pyproject.toml`.
-
----
-
-### Bonus: setup a project with `uv`
-
-You can add a module with functions in `src/my_project`, e.g.:
 ```python
-# src/my_project/my_module.py
-def add(x, y):
-    return x + y
+assert mse_py([1.0, 2.0], [1.0, 2.0]) == 0.0
+assert mse_py([1.0, 3.0], [2.0, 1.0]) == 2.5
 ```
 
-Then in any other script, you can import your functions:
+Reject empty or mismatched inputs with `ValueError`.
+
+<!--
+Presenter cue: spend 2 minutes launching, then 7 minutes on pair coding. Move to the hint after 3 minutes of coding. Require both assertions and at least one invalid-input check.
+-->
+
+---
+
+<!-- _class: hint -->
+
+## Exercise hint
+
+After three minutes:
+
+1. check the two lengths;
+2. pair targets and predictions with `zip`;
+3. square each difference;
+4. divide the total by the number of targets.
+
 ```python
-# my_project/main.py
-from my_project.my_module import add
-x = add(2.0, 3.0)
+squared_errors = [
+    (target - prediction) ** 2
+    for target, prediction in zip(y_true, y_pred)
+]
 ```
+
+What should happen if either input is empty?
 
 ---
 
-### Bonus: setup a project with `uv`
+<!-- _class: solution -->
 
-Run your scripts with:
+## One solution
+
+```python
+def mse_py(y_true: list[float], y_pred: list[float]) -> float:
+    if not y_true or len(y_true) != len(y_pred):
+        raise ValueError("inputs must have the same non-zero length")
+    return sum(
+        (target - prediction) ** 2
+        for target, prediction in zip(y_true, y_pred)
+    ) / len(y_true)
+```
+
+The checks are examples, not a complete test suite.
+
+<!--
+Debrief cue: ask why the length check must happen before zip. Use the remaining 2 minutes to connect list arithmetic to NumPy vectorization.
+-->
+
+---
+
+<!-- _class: summary -->
+
+## Python checklist for today
+
+You have met:
+
+- run a script and read an error bottom-up;
+- the classic types, strings, lists, tuples, dicts, and sets;
+- conditions, loops, comprehensions, and `zip`;
+- functions with explicit contracts and a brief look at classes.
+
+We keep only what today's fit–predict–evaluate workflow needs; the rest is reference material.
+
+---
+
+<!-- _class: appendix -->
+
+## Appendix A · A short history of Python
+
+Reference only, not part of the 180-minute lesson.
+
+- **1991**: first public release by Guido van Rossum, for readable general-purpose programming.
+- **2000**: Python 2.0 (list comprehensions, cleaner stdlib).
+- **2008**: Python 3.0, a deliberate breaking redesign; Python 2 retired in 2020.
+- **2023–2025**: Python 3.11 to 3.13, with faster startup, richer typing, and better concurrency.
+- Main implementation is **CPython** (written in C); neighbors include PyPy (JIT) and MicroPython.
+
+---
+
+<!-- _class: appendix -->
+
+## Appendix B · Bytecode, the GIL, and why NumPy is fast
+
+- **Bytecode**: CPython compiles your source to bytecode, then a virtual machine runs it. You usually never see it; you just run the file.
+- **GIL** (Global Interpreter Lock): only one thread executes Python bytecode at a time. That is fine here, where the heavy work is inside small Python functions or NumPy kernels; it matters only if you someday try to parallelize CPU-bound *pure-Python* loops with threads.
+- **Why NumPy is fast**: the hot loop is moved into compiled, vectorized C (and Fortran) code, so per-element Python overhead disappears.
+- **Going further**: Numba JIT-compiles numeric loops; `pybind11` exposes C code to Python.
+
+Rule of thumb: keep hot loops in compiled kernels (NumPy, Numba, or a binding), not in pure Python. See *Python tooling & environments* for the CPython overview.
+
+---
+
+<!-- _class: appendix -->
+
+## Appendix C · Interpreted vs compiled and the C++ dot product
+
+Reference only.
+
+**Compiled languages** (C, C++, Rust, …) are translated to machine code **before** running. They are fast at runtime, but you recompile after each change.
+
+**Interpreted languages** (Python, JavaScript, R, …) are run directly by an interpreter or virtual machine. They are easier to test and debug, there is no manual compile step, but raw loops are usually slower.
+
+Python's dot product:
+
+```python
+x = [1, 2, 3]
+y = [4, 5, 6]
+
+dot = sum(x_i * y_i for x_i, y_i in zip(x, y))
+print(dot)  # 32
+```
+
 ```bash
-uv run python main.py
+python my_script.py
 ```
 
-That's it! 
+The same dot in C++ needs a separate compile step first:
 
-For more information about [uv](https://docs.astral.sh/uv/getting-started/installation/), check out their website.
+```bash
+g++ dot.cpp -o dot && ./dot
+```
+
+Python trades a little raw speed for much shorter, easier-to-read code. That is exactly why we delegate the hot loops to libraries like NumPy.
 
 ---
 
-### Resources
+<!-- _class: appendix -->
 
-- [Python homepage](https://www.python.org)  
-- [Python docs](https://docs.python.org/3/)  
-- [Python tutorial](https://docs.python.org/3/tutorial/index.html)  
-- [Python standard library](https://docs.python.org/3/library/index.html)  
+## Bonus · setting up `uv`
 
-💡 You don't need to read these like books:  
-- Scroll and skim what looks useful  
-- Use them as a reference when stuck  
+Environment setup (`uv init`, `uv sync`, `uv run`, lockfiles, and the full toolbox) is covered in the optional **Python tooling & environments** deck. The short version for this course: `uv sync`, then always `uv run …`.
+
+---
+
+<!-- _class: appendix -->
+
+## Resources
+
+Use when stuck, not as a cover-to-cover read:
+
+- [Python home](https://www.python.org)
+- [Python documentation](https://docs.python.org/3/)
+- [Python tutorial](https://docs.python.org/3/tutorial/index.html)
+- [Python standard library reference](https://docs.python.org/3/library/index.html)

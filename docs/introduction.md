@@ -4,51 +4,81 @@ _class: lead
 marp: true
 paginate: true
 size: 16:9
-header: ENSAI - 2A - Programmation algorithmique en Python - 2025/2026
-# footer: 2025 - 2026
+header: ENSAI · Algorithms and Programming in Python
 markdown.marp.enableHtml: true
 ---
 
-### Algorithms and Programming in Python
+# Python and NumPy for machine learning
 
-1. Introduction: objectives, schedule & exam
-2. Basics about Python & NumPy
-3. Warm-up exercices: linear regression, k-Means, ...
+A three-hour bridge for students who already know basic programming, elementary linear algebra, means, and variances.
 
-----
+**Before class:** start the supplied environment and notebook successfully. This setup check is not part of the live three-hour schedule.
 
-### Objectives
-
-The objective is to implement a few optimization algorithms:
-
-- Gradient descent (GD)
-- Accelerated gardient descent (momentum, NAG)
-- Proximal/projected gradient descent
-- Stochastic gradient descent (SGD)
-- ...
-
-And develop good development practices in Python for ML.
-
-----
-
-### Schedule
-
-- Basics about Python, NumPy & Scipy + linear regression ~ 3h
-- Ridge regression (GD, NAG, SGD) ~ 3h
-- Elastic-net (proximal gradient descent) ~ 3h
-- Gaussian mixture model (projected gradient descent, EM) ~ 3h
-- Reproductibility, metrics, and evaluation ~ 3h
-- Exam ~ 3h
+**Opening diagnostic · no code:** if `x.shape == (50,)`, what are the shapes of `x[:, None]` and `x - x[:, None]`?
 
 ---
 
-### Exam
+## What you will be able to do
 
-- 3 hours in class
-- Access to online documentation
-- LLMs are forbidden
-- One exercise closely related to what we've done in class
+By the end of this session, you can:
 
-**Example**
-- A slighly different optimization algorithm
-- Applying what we've done to a real world problem
+1. write small Python functions with lists, loops, and comprehensions;
+2. reason about NumPy **shapes**, **dtypes**, and **axes**;
+3. vectorize a calculation instead of writing loops;
+4. generate reproducible data with an explicit random-number generator;
+5. **fit, predict, and evaluate** a univariate linear-regression model;
+6. verify results with invariants and `numpy.linalg.lstsq`.
+
+---
+
+## Agenda · first 90 minutes
+
+| Time | Activity |
+|---|---|
+| 00:00–00:10 | Outcomes, prerequisites, setup confirmation, diagnostic |
+| 00:10–00:35 | Essential Python syntax |
+| 00:35–00:50 | Guided Python micro-exercise |
+| 00:50–01:15 | NumPy arrays, shapes, dtypes, indexing, reductions |
+| 01:15–01:30 | Shape and broadcasting exercise |
+
+Exercises are part of the schedule, not optional extras.
+
+---
+
+## Agenda · final 90 minutes
+
+| Time | Activity |
+|---|---|
+| 01:30–01:40 | **Break** |
+| 01:40–02:00 | Regression problem and pure-Python baseline |
+| 02:00–02:30 | NumPy regression pair exercise |
+| 02:30–02:40 | Debrief, `lstsq`, numerical practice, and next-step preview |
+| 02:40–02:50 | Mini-assessment |
+| 02:50–02:55 | Summary and bridge to the next lecture |
+| 02:55–03:00 | **Contingency** |
+
+**Total: 180 minutes; prepared content finishes by 02:55.**
+
+---
+
+## Course roadmap
+
+1. Python, NumPy, SciPy, and linear regression
+2. Ridge regression with GD, momentum/NAG, and SGD
+3. Elastic Net with proximal gradient descent
+4. Gaussian mixtures with projected gradient and EM
+5. Reproducibility, metrics, and evaluation
+6. Final exam
+
+Today we stop after one complete, reproducible linear-regression workflow.
+
+---
+
+## Assessment
+
+- **Duration:** three hours in class
+- **Resources:** access to online documentation
+- **Not allowed:** LLM assistance
+- **Format:** one exercise closely related to class work
+
+A typical exam asks you to adapt an optimization algorithm or apply the course methods to a real-world problem.
