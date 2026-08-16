@@ -1,0 +1,22 @@
+[project]
+name = "ensai-2a-prog-alg-ml"
+version = "0.1.0"
+description = "Executable teaching environment for the ENSAI Algorithms and Programming in Python course"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "jupyterlab>=4.4,<5",
+  "jupytext>=1.17,<2",
+  "matplotlib>=3.10,<4",
+  "nbclient>=0.10,<1",
+  "nbformat>=5.10,<6",
+  "numpy>=2.2,<3",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pymupdf==1.26.3",
+]

@@ -4,224 +4,243 @@ _class: lead
 marp: true
 paginate: true
 size: 16:9
-header: ENSAI - 2A - Programmation algorithmique en Python - 2025/2026
-# footer: 2025 - 2026
+header: ENSAI · Linear regression workflow
 markdown.marp.enableHtml: true
 ---
 
-# Linear regression 📈
-Pure Python vs NumPy implementation
+# Linear regression · one complete workflow 📈
+
+Model → fit → predict → evaluate → verify.
+
+**20 minutes model + Python baseline · 30 exercise · 10 debrief · 10 check · 5 bridge · 5 contingency**
 
 ---
 
-## Problem setup
+## Problem, data, and model
 
-We want to fit a line:
+One reproducible dataset:
 
-$$ 
-y = a x + b 
-$$
-
-Given data points $(x_i, y_i)$, find $a, b$ that minimize:
-
-$$
-\mathrm{MSE}(a, b) = \frac{1}{n} \sum_{i=1}^n (y_i - (a x_i + b))^2
-$$
-
----
-
-## Analytical solution
-
-Optimal parameters are:
-
-$$
-a = \frac{\sum (x_i - \overline{x})(y_i - \overline{y})}{\sum (x_i - \overline{x})^2},
-$$
-
-and
-
-$$
-b = \overline{y} - a \overline{x}
-$$
-
-where $\overline{x}$ and $\overline{y}$ are the means of $X = (x_1, ..., x_n)$ and $Y = (y_1, ..., y_n)$.
-
----
-
-## Pure Python approach: simulate toy data
-
-Set some parameters:
 ```python
-import random
+import numpy as np
 
-n = 100
-a_true, b_true = 2.0, 1.0
-noise_std = 1.0
+rng = np.random.default_rng(42)
+x = rng.uniform(0.0, 10.0, size=50)
+y = 1.0 + 2.5 * x + rng.normal(0.0, 2.0, size=x.shape)
 ```
 
-Create a simulated dataset:
-```python
-X_train = [random.uniform(0, 10) for _ in range(n)]
-y_train = [a_true * x + b_true + random.gauss(0, noise_std) for x in X_train]
-```
+Model one target from one feature:
+
+$$
+\hat y_i = b + a x_i
+$$
+
+Parameters: slope $a$, intercept $b$; residual: $e_i = y_i - \hat y_i$.
+
+$$
+\min_{a,b}\;\operatorname{MSE}=\frac{1}{n}\sum_{i=1}^{n}\left(y_i-(b+a x_i)\right)^2
+$$
 
 ---
 
+## Fit → predict → evaluate
 
-## Computing slope & intercept
+```text
+observations (x, y)
+        │
+        ▼
+fit ──► parameters (slope, intercept)
+        │
+        ▼
+predict(x) ──► predictions
+        │
+        ▼
+evaluate(y, predictions) ──► MSE + checks
+```
 
-Implement mean, variance, covariance manually:
+Compare against a mean-only baseline:
 
 ```python
-def mean(values):
-    return sum(values) / len(values)
-
-def covariance(x, y, x_mean, y_mean):
-    return sum((xi - x_mean)*(yi - y_mean) for xi, yi in zip(x, y)) / len(x)
-
-def variance(values, mean_value):
-    return sum((v - mean_value)**2 for v in values) / len(values)
-
-x_mean, y_mean = mean(X_train), mean(y_train)
-a = covariance(X_train, y_train, x_mean, y_mean) / variance(X_train, x_mean)
-b = y_mean - a * x_mean
+baseline = np.full_like(y, y.mean())
 ```
+
+Today, training MSE checks the implementation; it does **not** estimate generalization. Later: evaluation on held-out validation data.
 
 ---
 
-## NumPy approach: generate toy data
+## Prepared baseline · pure-Python fit
 
-Set some parameters
+**Instructor walkthrough:** solution notebook §1. Population factors cancel:
+
 ```python
-np.random.seed(42)
-n_samples = 50
-
-true_a, true_b = 2.5, 1.0
-```
-
-Create toy dataset:
-```python
-x = np.random.uniform(0, 10, size=n_samples)
-noise = np.random.normal(0, 2, size=n_samples)
-y = true_a * x + true_b + noise
+def fit_linear_py(x_values, y_values):
+    if not x_values or len(x_values) != len(y_values):
+        raise ValueError("x and y need equal non-zero lengths")
+    x_mean = mean_py(x_values)
+    y_mean = mean_py(y_values)
+    numerator = sum(
+        (x_i - x_mean) * (y_i - y_mean)
+        for x_i, y_i in zip(x_values, y_values)
+    )
+    denominator = sum((x_i - x_mean) ** 2 for x_i in x_values)
+    if denominator == 0.0:
+        raise ValueError("x must vary")
+    slope = numerator / denominator
+    intercept = y_mean - slope * x_mean
+    return slope, intercept
 ```
 
 ---
 
-## NumPy implementation
+<!-- _class: exercise -->
 
-Compute the solution using NumPy API:
+## Exercise · NumPy fit–predict–evaluate
 
-```python
-x_mean = np.mean(x)
-y_mean = np.mean(y)
+**Time:** 30 minutes · **Work:** pairs · **Notebook:** `session01_starter.ipynb`
 
-cov_xy = np.mean((x - x_mean) * (y - y_mean))
-var_x = np.mean((x - x_mean) ** 2)
+Implement:
 
-a = cov_xy / var_x
-b = y_mean - a * x_mean
+```text
+fit_linear_numpy(x, y) -> (slope, intercept)
+predict_numpy(x, slope, intercept) -> predictions
+mse_numpy(y, predictions) -> mse
 ```
 
-We only use the `np.mean` method, are there other ways?
+Completion checks:
 
----
-
-## Visualizing the fit
-
-Generate some test inputs
 ```python
-x_test = np.linspace(0, 10, 100)
-y_pred = a * x_test + b
+assert predictions_np.shape == y.shape == (50,)
+assert np.isfinite([slope_np, intercept_np, mse_value_np]).all()
+assert mse_value_np < mse_numpy(y, np.full_like(y, y.mean()))
 ```
 
-Plot the result with `matplotlib`
-```python
-import matplotlib.pyplot as plt
+Expected: slope ≈ `2.5242`, intercept ≈ `0.5373`, MSE ≈ `2.2939`.
 
-plt.scatter(x, y, label="Noisy data")
-plt.plot(x_test, true_a * x_test + true_b, color="green", linestyle="--", label="True line")
-plt.plot(x_test, y_pred, color="red", label="Fitted line")
-plt.legend()
+Also test invalid inputs: empty, mismatched, 2-D, or constant `x`.
+
+<!--
+Presenter cue: spend 3 minutes launching. At minute 10 move to the first hint; at minute 20 reveal the parameter formulas. Stop at 30 minutes and continue with the supplied solution.
+-->
+
+---
+
+<!-- _class: hint -->
+
+## Staged hints
+
+**After 10 minutes: shapes**
+
+```python
+x_centered = x - x.mean()
+y_centered = y - y.mean()
 ```
 
----
+**After 20 minutes: parameters**
 
-### Too easy? Multidimensional linear regression (1/2) 🔥
+```python
+slope_np = np.mean(x_centered * y_centered) / np.mean(x_centered**2)
+intercept_np = y.mean() - slope_np * x.mean()
+```
 
-We now have vectors $x_i \in \mathbb{R}^d$:
+**Final check**
 
-$$
-y_i \approx w^\top x_i
-$$
-
-Objective:
-$$
-\min_w \ \|y - Xw\|_2^2
-$$
-
-Find the analytical solution for $w$ and implement it in Python.
-
-Closed-form solution:
-
-* $$\hat{w} = (X^\top X)^{-1} X^\top y$$
+The model MSE should beat the mean baseline MSE, approximately `51.4769`.
 
 ---
 
-### Too easy? Multidimensional linear regression (2/2) 🔥
+<!-- _class: solution -->
 
-Add an intercept:
+## Vectorized solution
 
-$$
-y_i \approx w^\top x_i + b
-$$
+```python
+def fit_linear_numpy(x, y):
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    if x.ndim != 1 or y.ndim != 1 or x.shape != y.shape or x.size == 0:
+        raise ValueError("x and y need equal non-zero 1D shapes")
+    x_centered = x - x.mean()
+    denominator = np.mean(x_centered**2)
+    if denominator == 0.0:
+        raise ValueError("x must vary")
+    slope = np.mean(x_centered * (y - y.mean())) / denominator
+    intercept = y.mean() - slope * x.mean()
+    return float(slope), float(intercept)
 
-Find the analytical solution for $w$ and $b$, and implement it in Python.
+slope_np, intercept_np = fit_linear_numpy(x, y)
+predictions_np = intercept_np + slope_np * x
+mse_value_np = np.mean((y - predictions_np) ** 2)
+```
 
-Closed-form solution:
+Result: `(slope, intercept, MSE) = (2.5242, 0.5373, 2.2939)`.
 
-* Let $\tilde{X} = \begin{bmatrix} X & \mathbf{1} \end{bmatrix}$, $\tilde{w} = \begin{bmatrix} w \\ b \end{bmatrix}$.
-* $$\hat{\tilde{w}} = (\tilde{X}^\top \tilde{X})^{-1} \tilde{X}^\top y$$
-
----
-
-### A bit harder? Ridge regression 🔥🔥
-
-We now **penalize large weights** to avoid overfitting:
-
-$$
-\mathcal{L}(w) = \frac{1}{n} \sum_i (y_i - w^\top x_i - b)^2 + \lambda \|w\|_2^2
-$$
-
-- Same idea: minimize the MSE  
-- But now with a regularization term controlled by $\lambda$
-- Find the analytical solution for $w$ and implement it
-
-Closed-form solution:
-
-* $$\hat{w} = (X^\top X + \lambda I)^{-1} X^\top y$$
+<!--
+Debrief cue: check shapes, invalid inputs, and baseline comparison before discussing exact coefficients. Preserve the following 10-minute solver and numerical-practice block.
+-->
 
 ---
 
-# k-Means clustering
-Pure Python vs NumPy implementation
+<!-- _class: check -->
+
+## Verify with a solver and a plot
+
+![bg right:46% contain](assets/regression_workflow.png)
+
+```python
+design = np.column_stack([x, np.ones_like(x)])
+(slope_ls, intercept_ls), *_ = np.linalg.lstsq(
+    design, y, rcond=None
+)
+
+assert design.shape == (50, 2)
+assert np.allclose(
+    [slope_np, intercept_np],
+    [slope_ls, intercept_ls],
+    rtol=1e-12,
+    atol=1e-12,
+)
+```
+
+`lstsq` solves the least-squares problem directly. Do not form an explicit inverse just to obtain these coefficients.
+
+A plot checks structure; numerical assertions check values.
 
 ---
 
-### k-Means clustering from scratch 🔥🔥🔥
+<!-- _class: assessment -->
 
-Iterate until convergence:
+## Mini-assessment · 10 minutes
 
-- Initialize centers $(C \in \mathbb{R}^{k \times d}$ (random rows of $X$)
--  Assign:
-$$
-a_i = \arg\min_j \|x_i - c_j\|^2
-$$
-- Update:
-$$
-c_j = \text{mean of } \{x_i : a_i = j\}
-$$
+Answer individually before discussing:
 
-Stop when assignments don't change or $\|C^{(t)} - C^{(t-1)}\|$ is small
+1. Complete `def predict(x, slope, intercept): return ...`; for `x.shape == (50,)`, what is the output shape?
+2. What is the shape of `column_stack([x, ones_like(x)])`, and why include ones?
+3. What shape results from subtracting `(50, 1)` predictions from `(50,)` targets?
+4. Why use `default_rng(42)`, and why compare MSE with a mean baseline?
+5. Does a low training MSE prove good performance on unseen data?
+6. What should agree with `lstsq`, and name one invariant to check first.
+
+Be ready to justify each answer using shapes or the workflow contract.
+
+<!--
+Assessment cue: require individual answers before pair discussion. Do not reveal slide 10 early.
+-->
 
 ---
+
+<!-- _class: summary -->
+
+## Answers and takeaways
+
+1. `return intercept + slope * x`; output shape `(50,)`.
+2. Design shape `(50, 2)`; the ones multiply the intercept.
+3. Broadcasting produces `(50, 50)`, a silent and serious bug.
+4. `default_rng(42)` reproduces data; the baseline tests value beyond one constant.
+5. No. Generalization needs data not used for fitting.
+6. Coefficients match `lstsq`; check shapes and finiteness first.
+
+The complete workflow is:
+
+```text
+reproduce → validate → fit → predict → compare → verify/plot → interpret
+```
+
+Next: held-out validation, then optimization and regularization.

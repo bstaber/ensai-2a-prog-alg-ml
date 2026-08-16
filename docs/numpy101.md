@@ -4,343 +4,323 @@ _class: lead
 marp: true
 paginate: true
 size: 16:9
-header: ENSAI - 2A - Programmation algorithmique en Python - 2025/2026
-# footer: 2025 - 2026
+header: ENSAI · NumPy shape reasoning
 markdown.marp.enableHtml: true
 ---
 
-# NumPy 101 ⚡
+# NumPy shape reasoning 🔢
 
-```bash
-pip install numpy
-```
+Arrays, axes, broadcasting, and checks for reliable numerical code.
 
-```bash
-uv add numpy
-```
-
+**25 minutes teaching · 15 minutes guided practice**
 
 ---
 
-### What is NumPy?
+## An array has a contract
 
-- **Numerical Python** = arrays + fast math  
-- More compact and faster than Python lists  
-- Supports broadcasting, vectorization, and linear algebra
-
-How to import `numpy`:
 ```python
 import numpy as np
+
+values = np.array([2.0, 4.0, 8.0, 16.0])
 ```
+
+Every array has:
+
+```python
+values.shape   # (4,)
+values.ndim    # 1
+values.dtype   # dtype('float64')
+values.size    # 4
+```
+
+Before any calculation, ask: **What shape do I have? What shape do I need?**
 
 ---
 
-### Creating arrays
+## Create data with an explicit generator
 
 ```python
-a = np.array([1, 2, 3])  # vector
-b = np.array([[1, 2], [3, 4]]) # 2 by 2 matrix
-```
+rng = np.random.default_rng(42)
 
-Common constructors:
+x = rng.uniform(0.0, 10.0, size=50)
+noise = rng.normal(0.0, 2.0, size=x.shape)
+y = 1.0 + 2.5 * x + noise
+```
 
 ```python
-np.zeros((2, 3))
-np.ones((3,))
-np.eye(3)            # identity
-np.arange(0, 10, 2)
-np.linspace(0, 1, 5)
+x.shape == y.shape == (50,)  # True
 ```
+
+- One owned generator makes state and reproducibility visible.
+- Calling `default_rng(42)` again restarts the same sequence.
+- Use `rng.integers(0, 10, size=5)`, not a nonexistent module-level `np.random.integers(...)`.
 
 ---
 
-### Array properties
+## One dimension is not a row or column matrix
 
-Classical attributes of an array:
 ```python
-a.shape   # dimensions
-a.ndim    # number of axes
-a.size    # number of elements
-a.dtype   # element type
+vector = np.array([10.0, 20.0, 30.0])
+row = vector[None, :]
+column = vector[:, None]
+
+vector.shape   # (3,)
+row.shape      # (1, 3)
+column.shape   # (3, 1)
 ```
 
-NumPy uses float64/int64 by default but it can handle other dtypes:
-```python
-x = np.array([1.0, 2.0, 3.0], dtype=np.float32)
-```
+These shapes carry different broadcasting and matrix-multiplication behavior.
 
-💡 PyTorch/JAX use float32/int32 by default!
+A trailing comma matters: `(3,)` is a one-element tuple.
 
 ---
 
-### Indexing & slicing
+## Indexing can remove or preserve an axis
 
 ```python
-x = np.array([[10, 20, 30], [40, 50, 60]])
-x[1, 2]     # element
-x[:, 1]     # column
-x[0]        # row
-x[0:2, 1:]  # submatrix
+matrix = np.array([
+    [1.0, 2.0],
+    [3.0, 4.0],
+    [5.0, 6.0],
+])
+
+matrix[0].shape       # (2,)
+matrix[0:1].shape     # (1, 2)
+matrix[:, 0].shape    # (3,)
+matrix[:, 0:1].shape  # (3, 1)
 ```
 
-Boolean & fancy indexing:
-
-```python
-x[x > 30]         
-x[[0, 1], [1, 2]]
-```
+Integer indexing removes an axis. A length-one slice preserves it.
 
 ---
 
-### Array operations
+## Views and copies depend on the operation
 
-Element-wise:
-
-```python
-a = np.array([1, 2, 3])
-b = np.array([10, 20, 30])
-a + b
-a * b
-a ** 2
-```
-
-Aggregate functions:
+Basic slicing usually shares data:
 
 ```python
-np.sum(a), np.mean(a), np.std(a)
+view = matrix[:, :1]
+np.shares_memory(matrix, view)  # True
 ```
+
+Advanced indexing usually copies:
+
+```python
+copy = matrix[[0, 2]]
+np.shares_memory(matrix, copy)  # False
+```
+
+`reshape` and `ravel` return views when possible, but may copy. Use `.copy()` when independence is required.
 
 ---
 
-### Broadcasting
-
-Works on arrays of different shapes:
+## Array arithmetic enables vectorization
 
 ```python
-a = np.array([[1], [2], [3]])
-b = np.array([10, 20, 30])
-a + b
+x = np.array([1.0, 2.0, 3.0])
+
+x + 10.0  # array([11., 12., 13.])
+x * x     # array([1., 4., 9.])
+x**2      # array([1., 4., 9.])
 ```
 
-The result is:
-```bash
-array([[11, 21, 31],
-       [12, 22, 32],
-       [13, 23, 33]])
+A whole error calculation:
+
+```python
+squared_errors = (y - predictions) ** 2
+mse = squared_errors.mean()
 ```
 
-Very powerful: no loops needed.
+`*` is element-wise. Use `@` for matrix multiplication. Array expressions state the calculation and let NumPy run compiled numerical kernels.
 
 ---
 
-### Broadcasting
+## Reductions remove an axis
 
-**Adding a scalar to a vector**
+For `matrix.shape == (3, 2)`:
+
 ```python
-import numpy as np
-a = np.array([1.0, 2.0, 3.0])
-b = 2.0
-a + b
+matrix.mean()          # scalar
+matrix.mean(axis=0)    # shape (2,): one mean per column
+matrix.mean(axis=1)    # shape (3,): one mean per row
 ```
 
-![Illustration](../img/broadcast1.png)
+Think: **the named axis is consumed**.
+
+```text
+axis=0 ↓ combines rows     axis=1 → combines columns
+```
+
+Always connect an `axis` argument to the input and output shapes.
 
 ---
 
-### Broadcasting
+## `keepdims=True` preserves a length-one axis
 
-**Adding a vector to a matrix**
 ```python
-import numpy as np
-a = np.array([[ 0.0,  0.0,  0.0],
-              [10.0, 10.0, 10.0],
-              [20.0, 20.0, 20.0],
-              [30.0, 30.0, 30.0]])
-b = np.array([1.0, 2.0, 3.0])
-a + b
+row_means = matrix.mean(axis=1, keepdims=True)
+
+matrix.shape      # (3, 2)
+row_means.shape   # (3, 1)
 ```
 
-![Illustration](../img/broadcast2.png)
+Now subtraction is unambiguous:
+
+```python
+centered = matrix - row_means
+centered.shape  # (3, 2)
+```
+
+Without `keepdims=True`, `(3, 2) - (3,)` is not broadcastable.
 
 ---
 
-### Broadcasting
+## Broadcasting aligns trailing dimensions
 
-**Outer product/sum**
-```python
-import numpy as np
-a = np.array([0.0, 10.0, 20.0, 30.0])
-b = np.array([1.0, 2.0, 3.0])
-a[:, np.newaxis] + b
+Two dimensions are compatible when they are equal or one of them is `1`.
+
+```text
+(3, 2)
+(3, 1)
+------
+(3, 2)  ✓
 ```
 
-![Illustration](../img/broadcast3.png)
+```text
+(4, 1, 2)
+(   3, 2)
+---------
+(4, 3, 2)  ✓
+```
+
+Broadcasting behaves as if length-one dimensions were repeated, usually without materializing those copies.
 
 ---
 
-### Broadcasting: distance matrix 🔥
+## Shape check · predict before running
 
-Let $X$ be a matrix of shape $(2, 3)$ that represents two vectors of length $3$.
+For `points.shape == (3, 2)`, what are the shapes?
 
 ```python
-X = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+points[0]
+points[0:1]
+points.mean(axis=0)
+points.mean(axis=1, keepdims=True)
+points[:, None, :]
+points[None, :, :]
 ```
 
-Compute the distance matrix defined as:
+Answers:
 
-$$D_{ij} = \|x_i - x_j\|_2^2$$
+```text
+(2,)  (1, 2)  (2,)  (3, 1)  (3, 1, 2)  (1, 3, 2)
+```
 
-where $x_i$ is the i-th line of $X$.
-
-- Try with a for loop
-- Then with broadcasting
+Which pair can broadcast to `(3, 3, 2)`?
 
 ---
 
-### Solution
+<!-- _class: exercise -->
+
+## Exercise · center every row
+
+**Time:** 7 minutes coding · 15 minutes including launch and debrief · **Work:** pairs
 
 ```python
-diff = X[:, None, :] - X[None, :, :]
-D = np.sum(diff**2, axis=-1)
+points = np.array([
+    [0.0, 0.0],
+    [1.0, 0.0],
+    [1.0, 2.0],
+])
 ```
 
-- `X[:, None, :]` has shape `(2, 1, 3)`
-- `X[None, :, :]` has shape `(1, 2, 3)`
-- Broadcasting makes them compatible: result is `(2, 2, 3)`.
-- Each `[i, j, :]` slice contains $x_i - x_j$.
+Create `row_means` with shape `(3, 1)`, then create `centered` with shape `(3, 2)`, all without a Python loop.
+
+```python
+assert row_means.shape == (3, 1)
+assert centered.shape == points.shape
+assert np.allclose(centered.mean(axis=1), 0.0)
+```
+
+<!--
+Presenter cue: spend 2 minutes launching, then 7 minutes on pair work. Require students to write the expected shapes before coding. Move to the hint after 3 minutes of coding.
+-->
 
 ---
 
-### Reshaping arrays
+<!-- _class: hint -->
+
+## Exercise hint
+
+After three minutes:
+
+1. Which axis contains the two coordinates of one row?
+2. Which axis must the reduction consume?
+3. Which length-one axis must remain for subtraction?
 
 ```python
-a = np.arange(6)
-a.reshape((2, 3))
-a.flatten()   # copy
-a.ravel()     # view
-a.T           # transpose
+row_means = points.mean(axis=..., keepdims=...)
+centered = points - row_means
 ```
 
-Add dimensions:
-
-```python
-a[:, np.newaxis]
-np.expand_dims(a, axis=0)
-```
+**Optional fast finisher:** use `points[:, None, :] - points[None, :, :]` and predict the resulting shape.
 
 ---
 
-### Linear algebra basics
+<!-- _class: solution -->
 
-Create a matrix and a vector
+## Solution · row centering
+
 ```python
-A = np.array([[1, 2], [3, 4]])
-b = np.array([5, 6])
+row_means = points.mean(axis=1, keepdims=True)
+centered = points - row_means
+
+assert row_means.shape == (3, 1)
+assert centered.shape == points.shape
+assert np.allclose(centered.mean(axis=1), 0.0)
 ```
 
-A few possible methods:
-```python
-np.dot(A, b)       # dot
-A @ A              # matrix mult
-np.linalg.inv(A)   # inverse
-np.linalg.solve(A, b)
-```
+- `axis=1` consumes the two-coordinate feature axis.
+- `keepdims=True` retains a length-one axis, so subtraction broadcasts.
+- The checks make the intended shapes and numerical invariant executable.
 
-NumPy ≠ full linear algebra library, but covers essentials.
+**Optional fast finisher:** continue with pairwise squared distances in the notebook only after these core checks pass.
+
+<!--
+Debrief cue: ask which axis was consumed and why keepdims preserves broadcastability. The pairwise extension is for fast finishers only.
+-->
 
 ---
 
-### Random numbers
+<!-- _class: check -->
 
-If you need reproductibility:
+## Numerical checks are part of the algorithm
+
 ```python
-np.random.seed(0)
+assert predictions.shape == y.shape
+assert np.isfinite(predictions).all()
+assert np.allclose(actual, expected, rtol=1e-12, atol=1e-12)
 ```
 
-There a several random generation methods:
-```
-np.random.rand(2, 3)       # uniform [0,1)
-np.random.randn(3)         # normal
-np.random.integers(1, 10, (2, 2))
-np.random.choice([1, 2, 3], size=5)
-```
+- Use `np.allclose`, not exact equality, for most floating-point results.
+- Choose tolerances from the scale and precision of the problem.
+- Make shape and finiteness failures immediate.
+- Avoid an explicit matrix inverse when a solver such as `np.linalg.lstsq` expresses the problem directly.
 
 ---
 
-### Practical example: distance
+<!-- _class: summary -->
 
-Let $a \in \mathbb{R}^2$ and $b \in \mathbb{R}^2$. We want to compute
+## NumPy checklist for today
 
-$$
-\|a - b\|_2 = \sqrt{\sum_{i=1}^{2}(a_i - b_i)^2}
-$$
+You can now:
 
-```python
-a = np.array([1, 2])
-b = np.array([4, 6])
+- inspect `shape`, `ndim`, `dtype`, and `size`;
+- preserve or remove axes intentionally;
+- distinguish common views from copies;
+- replace numerical loops with array expressions;
+- explain reductions using input and output shapes;
+- apply the trailing-dimension broadcasting rules;
+- verify numerical results with shape, finiteness, and tolerance checks.
 
-dist = np.linalg.norm(a - b)
-```
-
----
-
-### Practical example: normalize rows
-
-Let $X \in \mathbb{R}^{2 \times 2}$. We want to normalize each row of $X$ by its norm.
-
-Pick a random matrix
-```python
-X = np.array([[1, 2], [3, 4]])
-```
-
-Compute norm along the column axis
-```python
-row_norms = np.linalg.norm(X, axis=1, keepdims=True)
-X_normed = X / row_norms
-```
-
----
-
-### Practical example: Monte Carlo estimation of π
-
-We sample points uniformly in the unit square $[0,1]^2$.  
-The probability of falling inside the quarter unit circle is $\pi/4$.
-
-$$
-\pi \approx 4 \cdot \frac{1}{N} \sum_{i=1}^N \mathbf{1}_{\mathcal{S}}(x_i), 
-\quad x_i \sim \mathcal{U}([0,1]^2)
-$$
-
-```python
-N = 10000
-x = np.random.rand(N)
-y = np.random.rand(N)
-inside = x**2 + y**2 <= 1
-pi_est = 4 * np.sum(inside) / N
-```
-
----
-
-### Recap
-
-- Arrays: fast, compact, vectorized  
-- Indexing, slicing, broadcasting  
-- Reshape and transpose  
-- Basic linear algebra  
-- Random numbers for simulations  
-
-NumPy is the foundation of many scientific stacks in Python.
-
----
-
-### Resources
-
-- [NumPy homepage](https://numpy.org)  
-- [User Guide](https://numpy.org/doc/stable/user/)  
-- [Quickstart Tutorial](https://numpy.org/doc/stable/user/quickstart.html)  
-- [Reference](https://numpy.org/doc/stable/reference/)
-- [NumPy 100 exercises](https://github.com/rougier/numpy-100)
-
-💡 Use the quickstart and examples to learn.  
-
-💡 The reference is best when you need details about a function.  
+Next: use these tools to fit, predict, and evaluate linear regression.
