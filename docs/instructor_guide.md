@@ -1,6 +1,6 @@
 # Session 1 instructor guide
 
-This guide runs the three-hour Python and NumPy bridge for mathematically trained students with prior programming experience. It covers the timed core slides (appendices and bonus material are reference-only and excluded from the 180-minute clock).
+This guide runs the three-hour Python and NumPy bridge for mathematically trained students with prior programming experience. It covers the timed core of the single session deck, slides 1–53 (the appendix, slides 54–75, is reference-only and excluded from the 180-minute clock).
 
 ## Before students arrive
 
@@ -10,7 +10,7 @@ Complete these checks before the live three-hour block:
 2. Run the README smoke test.
 3. Execute `notebooks/session01_solution.ipynb` from a clean kernel.
 4. Open `notebooks/session01_starter.ipynb` and confirm its setup cells run.
-5. Open all four rendered decks and verify the regression plot is visible.
+5. Open the rendered deck (`docs/session01.html`) and verify the regression plot is visible.
 6. Put the starter notebook URL or repository path where students can copy it.
 
 Environment troubleshooting is not part of the 180-minute schedule. Pair a student with a working neighbor if an unresolved setup problem appears during class.
@@ -19,17 +19,17 @@ Environment troubleshooting is not part of the 180-minute schedule. Pair a stude
 
 | Clock | Minutes | Material | Instructor action | Learner evidence |
 |---|---:|---|---|---|
-| 00:00–00:10 | 10 | Introduction 1–6 | State the audience contract, run the one-minute shape diagnostic on slide 1, then cover outcomes, schedule, and assessment constraints. Confirm setup is already complete. | Students predict `(50, 1)` and `(50, 50)`, then can name the six outcomes and exercise checkpoints. |
-| 00:10–00:35 | 25 | Python 1–19 | Move quickly: this is a refresher. Pause for predictions on list aliasing, `range`, `zip`, and invalid function inputs. Skip appendix and bonus slides. | Students answer the inline output/contract questions before code is revealed. |
-| 00:35–00:50 | 15 | Python 20–23 | Launch the MSE pair exercise, reveal the hint only at the timed cue, then debrief with the solution and checklist. | Both supplied assertions pass; empty and mismatched inputs raise `ValueError`. |
-| 00:50–01:15 | 25 | NumPy 1–11 | Require a shape prediction before every expression. Use hand gestures or board axes for `axis=0` and `axis=1`. | Students state each output shape before execution. |
-| 01:15–01:30 | 15 | NumPy 12–16 | Run the row-centering exercise. Offer pairwise distances only to fast finishers. Debrief shape, axis, and `keepdims`. | Shape checks pass and each row mean is numerically zero. |
+| 00:00–00:10 | 10 | Slides 1–4 · Introduction | State the audience contract, run the one-minute shape diagnostic on slide 1, then cover outcomes, schedule, and assessment constraints. Confirm setup is already complete. | Students predict `(50, 1)` and `(50, 50)`, then can name the six outcomes and exercise checkpoints. |
+| 00:10–00:35 | 25 | Slides 5–23 · Python | Move quickly: this is a refresher. Pause for predictions on list aliasing, `range`, `zip`, and invalid function inputs. The appendix at the end of the deck is not taught live. | Students answer the inline output/contract questions before code is revealed. |
+| 00:35–00:50 | 15 | Slides 24–27 · Python | Launch the MSE pair exercise, reveal the hint only at the timed cue, then debrief with the solution and checklist. | Both supplied assertions pass; empty and mismatched inputs raise `ValueError`. |
+| 00:50–01:15 | 25 | Slides 28–38 · NumPy | Require a shape prediction before every expression. Use hand gestures or board axes for `axis=0` and `axis=1`. | Students state each output shape before execution. |
+| 01:15–01:30 | 15 | Slides 39–43 · NumPy | Run the row-centering exercise. Offer pairwise distances only to fast finishers. Debrief shape, axis, and `keepdims`. | Shape checks pass and each row mean is numerically zero. |
 | 01:30–01:40 | 10 | Break | Stop on time. Keep the regression notebook ready for the restart. | — |
-| 01:40–02:00 | 20 | Regression 1–4 + solution-notebook Python baseline | Re-establish the shared dataset. Trace model → fit → predict → evaluate. Connect the formula to the prepared pure-Python baseline; only MSE was student-authored earlier. | Students can identify slope, intercept, residual, MSE, and baseline. |
-| 02:00–02:30 | 30 | Regression 5–7 + starter notebook | Launch the NumPy regression exercise. Give the two staged hints at 10 and 20 minutes; reveal the solution only after checks. | Correct shapes, finite coefficients, and model MSE below baseline. |
-| 02:30–02:40 | 10 | Regression 8 + solution notebook | Compare with `lstsq`, inspect the plot, discuss tolerance, then preview held-out validation. | Coefficients agree within `1e-12`; students explain why no explicit inverse is needed. |
-| 02:40–02:50 | 10 | Regression 9 | Students answer individually before pair discussion. Do not show slide 10 early. | Six short answers sampling function writing, vectorization, reproducibility, shapes, evaluation, and verification. |
-| 02:50–02:55 | 5 | Regression 10 | Reveal answers, restate the complete workflow, and bridge to the next session. | Students can narrate fit → predict → evaluate → verify. |
+| 01:40–02:00 | 20 | Slides 44–47 · Regression + solution-notebook Python baseline | Re-establish the shared dataset. Trace model → fit → predict → evaluate. Connect the formula to the prepared pure-Python baseline; only MSE was student-authored earlier. | Students can identify slope, intercept, residual, MSE, and baseline. |
+| 02:00–02:30 | 30 | Slides 48–50 · Regression + starter notebook | Launch the NumPy regression exercise. Give the two staged hints at 10 and 20 minutes; reveal the solution only after checks. | Correct shapes, finite coefficients, and model MSE below baseline. |
+| 02:30–02:40 | 10 | Slide 51 · Regression + solution notebook | Compare with `lstsq`, inspect the plot, discuss tolerance, then preview held-out validation. | Coefficients agree within `1e-12`; students explain why no explicit inverse is needed. |
+| 02:40–02:50 | 10 | Slide 52 · Regression | Students answer individually before pair discussion. Do not show slide 53 early. | Six short answers sampling function writing, vectorization, reproducibility, shapes, evaluation, and verification. |
+| 02:50–02:55 | 5 | Slide 53 · Regression | Reveal answers, restate the complete workflow, and bridge to the next session. | Students can narrate fit → predict → evaluate → verify. |
 | 02:55–03:00 | 5 | Protected contingency | Absorb normal delays or questions. Do not schedule new material here. | Prepared content has already finished. |
 
 **Rehearsal target:** finish all prepared content, including the summary, by 02:55. The final five minutes are protected contingency with no planned slide or activity.
@@ -100,7 +100,7 @@ Ask for an answer before revealing or executing code:
 - **NumPy:** What is the output shape? Which axis is consumed? Which length-one axis enables broadcasting? Does this operation share memory?
 - **Regression:** Can students write the vectorized prediction function? Which values are learned during fit? Why must predictions match target shape? What do the explicit RNG, baseline, and `lstsq` checks establish?
 
-Use the regression mini-assessment as the final individual check. Collect or inspect answers before showing slide 10.
+Use the regression mini-assessment as the final individual check. Collect or inspect answers before showing slide 53.
 
 ## If timing slips
 

@@ -6,13 +6,7 @@ import subprocess
 from pathlib import Path
 
 MARP_VERSION = "4.2.3"
-DECKS = (
-    "introduction",
-    "python101",
-    "numpy101",
-    "linear_regression",
-    "python_tooling",
-)
+DECK = "session01"
 
 
 def render_deck(root: Path, output_dir: Path, deck: str, extension: str) -> None:
@@ -50,11 +44,6 @@ def render_deck(root: Path, output_dir: Path, deck: str, extension: str) -> None
 
 
 def write_index(output_dir: Path) -> None:
-    links = "\n".join(
-        f'<li><a href="docs/{deck}.html">{deck.replace("_", " ").title()}</a> '
-        f'(<a href="docs/{deck}.pdf">PDF</a>)</li>'
-        for deck in DECKS
-    )
     (output_dir / "index.html").write_text(
         f"""<!doctype html>
 <html lang="en">
@@ -68,7 +57,9 @@ a {{ color: #c4a7e7; }} li {{ margin: .7rem 0; }}
 </style>
 <h1>Python and NumPy for machine learning</h1>
 <p>A three-hour bridge for mathematically trained students with prior programming experience.</p>
-<ul>{links}</ul>
+<ul><li><a href="docs/{DECK}.html">Session 1 slides</a> (<a href="docs/{DECK}.pdf">PDF</a>):
+introduction, Python essentials, NumPy shape reasoning, linear regression, and a reference appendix
+with Python tooling &amp; environments</li></ul>
 <p><a href="notebooks/session01_starter.ipynb">Starter notebook</a> ·
 <a href="notebooks/session01_solution.ipynb">Solution notebook</a></p>
 """,
@@ -77,7 +68,7 @@ a {{ color: #c4a7e7; }} li {{ margin: .7rem 0; }}
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Render the pinned Marp decks.")
+    parser = argparse.ArgumentParser(description="Render the pinned Marp deck.")
     parser.add_argument("output", nargs="?", default="build")
     args = parser.parse_args()
 
@@ -89,14 +80,13 @@ def main() -> None:
         shutil.rmtree(output_dir)
     (output_dir / "docs").mkdir(parents=True)
 
-    for deck in DECKS:
-        for extension in ("html", "pdf"):
-            render_deck(root, output_dir, deck, extension)
+    for extension in ("html", "pdf"):
+        render_deck(root, output_dir, DECK, extension)
 
     shutil.copytree(root / "docs" / "assets", output_dir / "docs" / "assets")
     shutil.copytree(root / "notebooks", output_dir / "notebooks")
     write_index(output_dir)
-    print(f"Rendered {len(DECKS)} decks with Marp CLI {MARP_VERSION} into {output_dir}")
+    print(f"Rendered {DECK} with Marp CLI {MARP_VERSION} into {output_dir}")
 
 
 if __name__ == "__main__":

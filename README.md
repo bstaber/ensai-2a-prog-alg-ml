@@ -73,7 +73,7 @@ The smoke test must succeed before class. Environment installation and troublesh
 
 ## Validate the complete course
 
-Render the four decks with the repository-pinned Marp CLI and then run every source, notebook, asset, slide-count, and PDF-geometry check:
+Render the session deck with the repository-pinned Marp CLI and then run every source, notebook, asset, slide-count, and PDF-geometry check:
 
 ```bash
 uv run python scripts/render_slides.py build
@@ -88,11 +88,18 @@ The validator executes clean copies of both notebooks. Source notebooks must rem
 
 ## Slides
 
-- [Introduction](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/introduction)
-- [Python 101](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/python101)
-- [NumPy 101](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/numpy101)
-- [Linear regression](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/linear_regression)
-- [Python tooling & environments](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/python_tooling) *(optional companion, not part of the timed lesson)*
+All of the session's slides live in one deck, [`docs/session01.md`](docs/session01.md) ([rendered](https://bstaber.github.io/ensai-2a-prog-alg-ml/docs/session01)), organized in parts:
+
+| Slides | Part |
+|---|---|
+| 1–4 | Introduction |
+| 5–27 | Python essentials |
+| 28–43 | NumPy shape reasoning |
+| 44–53 | Linear regression workflow |
+| 54–60 | Appendix · Python background and resources *(reference only)* |
+| 61–75 | Appendix · Python tooling & environments *(reference only)* |
+
+Slides 1–53 are the timed lesson; the appendix is not part of the 180-minute schedule.
 
 The slides are authored in [Marp](https://marp.app/) Markdown. Complete executable examples belong in the student and solution notebooks rather than being generated directly from the presentation files.
 

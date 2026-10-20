@@ -13,12 +13,19 @@ import numpy as np
 import pymupdf
 from nbclient import NotebookClient
 
-DECKS = {
-    "introduction": 6,
-    "python101": 28,
-    "numpy101": 16,
-    "linear_regression": 10,
-}
+DECK = "session01"
+# Ordered parts of the single deck: (name, opening H1 prefix, slide count).
+# The first four parts form the timed 180-minute lesson.
+PARTS = (
+    ("introduction", "# Python and NumPy for machine learning", 4),
+    ("python", "# Python essentials", 23),
+    ("numpy", "# NumPy shape reasoning", 16),
+    ("regression", "# Linear regression", 10),
+    ("appendix", "# Appendix", 7),
+    ("tooling", "# Python tooling", 15),
+)
+TIMED_PARTS = ("introduction", "python", "numpy", "regression")
+TOTAL_SLIDES = sum(count for _, _, count in PARTS)
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 FENCE_RE = re.compile(r"```(python|bash|text)\n(.*?)```", re.DOTALL)
 
@@ -27,25 +34,45 @@ def fail(message: str) -> None:
     raise AssertionError(message)
 
 
+def visible_text(slide: str) -> str:
+    return re.sub(r"<!--.*?-->", "", slide, flags=re.DOTALL).strip()
+
+
+def deck_slides(root: Path) -> list[str]:
+    path = root / "docs" / f"{DECK}.md"
+    return path.read_text(encoding="utf-8").split("\n---\n")[1:]
+
+
+def deck_parts(root: Path) -> dict[str, str]:
+    """Split the deck into its named parts, checking each part's opening slide."""
+    slides = deck_slides(root)
+    if len(slides) != TOTAL_SLIDES:
+        fail(f"{DECK}.md: expected {TOTAL_SLIDES} slides, found {len(slides)}")
+    parts: dict[str, str] = {}
+    start = 0
+    for name, opening, count in PARTS:
+        first = slides[start]
+        if not visible_text(first).startswith(opening):
+            fail(f"{DECK}.md slide {start + 1}: part {name!r} must open with {opening!r}")
+        if "_class: lead" not in first and start != 0:
+            fail(f"{DECK}.md slide {start + 1}: part {name!r} opening must be a lead slide")
+        parts[name] = "\n---\n".join(slides[start : start + count])
+        start += count
+    return parts
+
+
 def validate_structure(root: Path) -> None:
-    total = 0
-    for name, expected in DECKS.items():
-        path = root / "docs" / f"{name}.md"
-        parts = path.read_text(encoding="utf-8").split("\n---\n")
-        slides = parts[1:]
-        if len(slides) != expected:
-            fail(f"{path}: expected {expected} slides, found {len(slides)}")
-        for number, slide in enumerate(slides, 1):
-            visible = re.sub(r"<!--.*?-->", "", slide, flags=re.DOTALL).strip()
-            if not visible or not re.search(r"^#{1,2} ", visible, flags=re.MULTILINE):
-                fail(f"{path}: slide {number} is empty or has no heading")
-        total += len(slides)
-    if total != 60:
-        fail(f"expected 60 total slides, found {total}")
+    path = root / "docs" / f"{DECK}.md"
+    for number, slide in enumerate(deck_slides(root), 1):
+        visible = visible_text(slide)
+        if not visible or not re.search(r"^#{1,2} ", visible, flags=re.MULTILINE):
+            fail(f"{path}: slide {number} is empty or has no heading")
+    parts = deck_parts(root)
+    total = TOTAL_SLIDES
 
     for relative in [
         "README.md",
-        *[f"docs/{name}.md" for name in DECKS],
+        f"docs/{DECK}.md",
         "docs/instructor_guide.md",
     ]:
         path = root / relative
@@ -58,29 +85,28 @@ def validate_structure(root: Path) -> None:
             if target and not (path.parent / target).resolve().exists():
                 fail(f"{path}: missing local link or asset {raw_target!r}")
 
-    core = "\n".join((root / "docs" / f"{name}.md").read_text() for name in DECKS)
-    if "TP1_Ridge" in core:
-        fail("accidental TP1_Ridge material entered a core deck")
+    if "TP1_Ridge" in path.read_text(encoding="utf-8"):
+        fail("accidental TP1_Ridge material entered the deck")
 
-    python_deck = (root / "docs" / "python101.md").read_text(encoding="utf-8")
+    python_deck = parts["python"]
     python_exercise = python_deck.split("## Exercise · pure-Python MSE", 1)[1].split(
         "## Python checklist for today", 1
     )[0]
     guide = (root / "docs" / "instructor_guide.md").read_text(encoding="utf-8")
     if "mse_py" not in python_exercise:
         fail("Python deck exercise must use the notebook function name mse_py")
-    # Scan the whole python101 document (including error-reading / traceback
-    # examples) so no learner-facing string calls a bare `mse(...)` function.
-    if re.search(r"\bmse\(", python_deck):
-        fail("python101 deck must not call a bare mse( function; use mse_py")
+    # Scan the whole Python part and the appendix (including error-reading /
+    # traceback examples) so no learner-facing string calls a bare `mse(...)`.
+    if re.search(r"\bmse\(", python_deck + parts["appendix"]):
+        fail("Python slides must not call a bare mse( function; use mse_py")
     if "assert mse_py(" not in guide or "assert mse(" in guide:
         fail("instructor guide MSE checks must use mse_py")
 
-    numpy_deck = (root / "docs" / "numpy101.md").read_text(encoding="utf-8")
+    numpy_deck = parts["numpy"]
     if "centered_rows" in numpy_deck or "centered_rows" in guide:
         fail("row-centering deck and guide must use the notebook name centered")
 
-    regression = (root / "docs" / "linear_regression.md").read_text(encoding="utf-8")
+    regression = parts["regression"]
     assessment = regression.split("## Mini-assessment · 10 minutes", 1)[1].split(
         "---", 1
     )[0]
@@ -123,17 +149,18 @@ def validate_structure(root: Path) -> None:
     ):
         if sum(values) != 180 or sum(values[:-1]) != 175 or values[-1] != 5:
             fail(f"{label}: expected 175 prepared + 5 contingency, got {values}")
-    print(f"structure: {total} non-empty slides; local links/assets and timing pass")
+    timed = sum(count for name, _, count in PARTS if name in TIMED_PARTS)
+    print(
+        f"structure: {total} non-empty slides ({timed} timed); "
+        "local links/assets and timing pass"
+    )
 
 
 def execute_python_deck(root: Path) -> None:
-    text = (root / "docs" / "python101.md").read_text()
-    # Teaching-path execution stops at the first appendix marker: appendix and
-    # bonus examples are reference material and must not alter the timed-block
-    # namespace (their plain-list dot-product code would otherwise overwrite
-    # the shared x/y arrays asserted below).
-    teaching_text = text.split("<!-- _class: appendix -->", 1)[0]
-    blocks = FENCE_RE.findall(teaching_text)
+    # Only the timed Python part runs: appendix examples are reference material
+    # and must not alter the namespace (their plain-list dot-product code would
+    # otherwise overwrite the shared x/y arrays asserted below).
+    blocks = FENCE_RE.findall(deck_parts(root)["python"])
     namespace: dict[str, Any] = {}
     fragments = 0
     for index, (language, source) in enumerate(blocks, 1):
@@ -161,7 +188,7 @@ def execute_python_deck(root: Path) -> None:
 
 
 def execute_numpy_deck(root: Path) -> None:
-    blocks = FENCE_RE.findall((root / "docs" / "numpy101.md").read_text())
+    blocks = FENCE_RE.findall(deck_parts(root)["numpy"])
     namespace: dict[str, Any] = {}
     fragments = 0
     for index, (language, source) in enumerate(blocks, 1):
@@ -202,7 +229,7 @@ def expect_value_error(call: Any) -> None:
 
 
 def execute_regression_deck(root: Path) -> None:
-    blocks = FENCE_RE.findall((root / "docs" / "linear_regression.md").read_text())
+    blocks = FENCE_RE.findall(deck_parts(root)["regression"])
     namespace: dict[str, Any] = {}
     fragments = 0
     for index, (language, source) in enumerate(blocks, 1):
@@ -332,11 +359,11 @@ assert np.allclose([slope_np, intercept_np], [slope_lstsq, intercept_lstsq])
 
 
 def validate_rendered(root: Path, build_dir: Path) -> None:
-    expected_files = [build_dir / "index.html"]
-    for name in DECKS:
-        expected_files.extend(
-            [build_dir / "docs" / f"{name}.html", build_dir / "docs" / f"{name}.pdf"]
-        )
+    expected_files = [
+        build_dir / "index.html",
+        build_dir / "docs" / f"{DECK}.html",
+        build_dir / "docs" / f"{DECK}.pdf",
+    ]
     expected_files.extend(
         [
             build_dir / "docs" / "assets" / "regression_workflow.png",
@@ -352,23 +379,22 @@ def validate_rendered(root: Path, build_dir: Path) -> None:
     if missing:
         fail(f"missing or empty rendered files: {missing}")
 
-    for name, expected_pages in DECKS.items():
-        pdf_path = build_dir / "docs" / f"{name}.pdf"
-        document = pymupdf.open(pdf_path)
-        if len(document) != expected_pages:
-            fail(f"{pdf_path}: expected {expected_pages} pages, found {len(document)}")
-        for page_number, page in enumerate(document, 1):
-            if len(page.get_text().strip()) < 20:
-                fail(f"{pdf_path}: page {page_number} is unexpectedly empty")
-            width, height = page.rect.width, page.rect.height
-            for block in page.get_text("blocks"):
-                x0, y0, x1, y1 = block[:4]
-                if x0 < -0.5 or y0 < -0.5 or x1 > width + 0.5 or y1 > height + 0.5:
-                    fail(
-                        f"{pdf_path}: page {page_number} has out-of-bounds text {block[:5]}"
-                    )
+    pdf_path = build_dir / "docs" / f"{DECK}.pdf"
+    document = pymupdf.open(pdf_path)
+    if len(document) != TOTAL_SLIDES:
+        fail(f"{pdf_path}: expected {TOTAL_SLIDES} pages, found {len(document)}")
+    for page_number, page in enumerate(document, 1):
+        if len(page.get_text().strip()) < 20:
+            fail(f"{pdf_path}: page {page_number} is unexpectedly empty")
+        width, height = page.rect.width, page.rect.height
+        for block in page.get_text("blocks"):
+            x0, y0, x1, y1 = block[:4]
+            if x0 < -0.5 or y0 < -0.5 or x1 > width + 0.5 or y1 > height + 0.5:
+                fail(
+                    f"{pdf_path}: page {page_number} has out-of-bounds text {block[:5]}"
+                )
     print(
-        f"rendered output: HTML/PDF/assets/notebooks present; {sum(DECKS.values())} PDF pages pass geometry"
+        f"rendered output: HTML/PDF/assets/notebooks present; {TOTAL_SLIDES} PDF pages pass geometry"
     )
 
 
