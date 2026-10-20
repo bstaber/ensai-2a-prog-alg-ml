@@ -379,6 +379,13 @@ def validate_rendered(root: Path, build_dir: Path) -> None:
     if missing:
         fail(f"missing or empty rendered files: {missing}")
 
+    landing = (build_dir / "index.html").read_text(encoding="utf-8")
+    for target in re.findall(r'href="([^"#]+)"', landing):
+        if target.startswith(("http://", "https://", "mailto:")):
+            continue
+        if not (build_dir / unquote(target)).is_file():
+            fail(f"landing page links to missing build file {target!r}")
+
     pdf_path = build_dir / "docs" / f"{DECK}.pdf"
     document = pymupdf.open(pdf_path)
     if len(document) != TOTAL_SLIDES:

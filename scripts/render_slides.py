@@ -43,30 +43,6 @@ def render_deck(root: Path, output_dir: Path, deck: str, extension: str) -> None
         raise RuntimeError(f"Marp reported a missing local file in {source}")
 
 
-def write_index(output_dir: Path) -> None:
-    (output_dir / "index.html").write_text(
-        f"""<!doctype html>
-<html lang="en">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Python and NumPy for machine learning</title>
-<style>
-body {{ max-width: 52rem; margin: 4rem auto; padding: 0 1.5rem;
-       font: 1.15rem/1.6 system-ui, sans-serif; color: #e0def4; background: #191724; }}
-a {{ color: #c4a7e7; }} li {{ margin: .7rem 0; }}
-</style>
-<h1>Python and NumPy for machine learning</h1>
-<p>A three-hour bridge for mathematically trained students with prior programming experience.</p>
-<ul><li><a href="docs/{DECK}.html">Session 1 slides</a> (<a href="docs/{DECK}.pdf">PDF</a>):
-introduction, Python essentials, NumPy shape reasoning, linear regression, and a reference appendix
-with Python tooling &amp; environments</li></ul>
-<p><a href="notebooks/session01_starter.ipynb">Starter notebook</a> ·
-<a href="notebooks/session01_solution.ipynb">Solution notebook</a></p>
-""",
-        encoding="utf-8",
-    )
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Render the pinned Marp deck.")
     parser.add_argument("output", nargs="?", default="build")
@@ -85,7 +61,7 @@ def main() -> None:
 
     shutil.copytree(root / "docs" / "assets", output_dir / "docs" / "assets")
     shutil.copytree(root / "notebooks", output_dir / "notebooks")
-    write_index(output_dir)
+    shutil.copy2(root / "site" / "index.html", output_dir / "index.html")
     print(f"Rendered {DECK} with Marp CLI {MARP_VERSION} into {output_dir}")
 
 
