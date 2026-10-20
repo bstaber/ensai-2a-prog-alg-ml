@@ -7,20 +7,18 @@ palette in :root
 */
 
 @import "default";
-@import "schema";
-@import "structure";
 
 :root {
     --base: #191724;
     --surface: #1f1d2e;
     --overlay: #26233a;
-    --muted: #6e6a86;
+    --muted: #9893b4;
     --subtle: #908caa;
     --text: #e0def4;
     --love: #eb6f92;
     --gold: #f6c177;
     --rose: #ebbcba;
-    --pine: #31748f;
+    --pine: #6eabc2;
     --foam: #9ccfd8;
     --iris: #c4a7e7;
     --highlight-low: #21202e;
@@ -93,7 +91,38 @@ marp-pre {
     border-color: var(--highlight-high);
 }
 
-/* Code blok */
+/* Teaching-state cues: visible at a distance without consuming slide space. */
+section.exercise,
+section.hint {
+    box-shadow: inset 0 8px 0 var(--gold);
+}
+section.exercise h2,
+section.hint h2 {
+    color: var(--gold);
+}
+section.solution {
+    box-shadow: inset 0 8px 0 var(--foam);
+}
+section.solution h2 {
+    color: var(--foam);
+}
+section.check {
+    box-shadow: inset 0 8px 0 var(--iris);
+}
+section.check h2 {
+    color: var(--iris);
+}
+section.assessment {
+    box-shadow: inset 0 8px 0 var(--love);
+}
+section.assessment h2 {
+    color: var(--love);
+}
+section.summary {
+    box-shadow: inset 0 8px 0 var(--rose);
+}
+
+/* Code block */
 .hljs-comment {
     color: var(--muted);
 }
@@ -105,6 +134,11 @@ marp-pre {
 }
 .hljs-string {
     color: var(--gold);
+}
+.hljs-subst {
+    /* f-string interpolation placeholders {name} — must be readable on the
+       dark code background. Foam contrasts with the surrounding gold string. */
+    color: var(--foam);
 }
 .hljs-title {
     color: var(--foam);
