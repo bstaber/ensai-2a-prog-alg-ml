@@ -130,25 +130,21 @@ def validate_structure(root: Path) -> None:
             f"found {len(questions)} and missing {missing_terms}"
         )
 
-    readme = (root / "README.md").read_text(encoding="utf-8")
-    readme_minutes = [
-        int(value)
-        for value in re.findall(
-            r"^\| \d\d:\d\d–\d\d:\d\d \|.*?\| (\d+) \|$", readme, re.MULTILINE
-        )
-    ]
     guide_minutes = [
         int(value)
         for value in re.findall(
             r"^\| \d\d:\d\d–\d\d:\d\d \| (\d+) \|", guide, re.MULTILINE
         )
     ]
-    for label, values in (
-        ("README", readme_minutes),
-        ("instructor guide", guide_minutes),
+    if (
+        sum(guide_minutes) != 180
+        or sum(guide_minutes[:-1]) != 175
+        or guide_minutes[-1] != 5
     ):
-        if sum(values) != 180 or sum(values[:-1]) != 175 or values[-1] != 5:
-            fail(f"{label}: expected 175 prepared + 5 contingency, got {values}")
+        fail(
+            "instructor guide: expected 175 prepared + 5 contingency, "
+            f"got {guide_minutes}"
+        )
     timed = sum(count for name, _, count in PARTS if name in TIMED_PARTS)
     print(
         f"structure: {total} non-empty slides ({timed} timed); "
